@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CitasPedia</string>
+    <string name="nombre">Nombre completo:</string>
 </resources>
