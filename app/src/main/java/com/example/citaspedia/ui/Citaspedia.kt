@@ -1,5 +1,6 @@
 package com.example.citaspedia.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.citaspedia.R
+import com.example.citaspedia.data.Paciente
 import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.main_text
@@ -41,6 +44,8 @@ import com.example.citaspedia.ui.theme.denied_button
 
 @Composable
 fun Citaspedia() {
+    val paciente = remember { Paciente() }
+
     Scaffold(
         topBar = {
             CitaspediaTopAppBar()
@@ -54,6 +59,7 @@ fun Citaspedia() {
                 .fillMaxWidth()
                 .background(background_form)
         ) {
+            Spacer(modifier = Modifier.padding(16.dp))
             Text(
                 text = stringResource(id = R.string.nombre),
                 textAlign = TextAlign.Start,
@@ -62,8 +68,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.nombre.value,
+                onValueChange = { newValue ->
+                    paciente.nombre.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -80,8 +88,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.edad.value,
+                onValueChange = { newValue ->
+                    paciente.edad.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -98,8 +108,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.curp.value,
+                onValueChange = { newValue ->
+                    paciente.curp.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -116,8 +128,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.motivoIngreso.value,
+                onValueChange = { newValue ->
+                    paciente.motivoIngreso.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -134,8 +148,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.motivoLesion.value,
+                onValueChange = { newValue ->
+                    paciente.motivoLesion.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -152,8 +168,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.peso.value,
+                onValueChange = { newValue ->
+                    paciente.peso.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -170,8 +188,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.temperatura.value,
+                onValueChange = { newValue ->
+                    paciente.temperatura.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -188,8 +208,10 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = paciente.talla.value,
+                onValueChange = { newValue ->
+                    paciente.talla.value = newValue
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -212,7 +234,7 @@ fun Citaspedia() {
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = {},
+                    onClick = { pacienteInsert(paciente) },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
@@ -224,12 +246,18 @@ fun Citaspedia() {
             Spacer(modifier = Modifier.padding(16.dp))
         }
         /*
-            TODO: Los botones para el formulario
+            TODO: Falta poner el cuadro de texto para Sexo.
             TODO: Poder insertar texto en los campos y guardarlos en variables.
+            TODO: Poder navegar entre cuadros de texto sin tener que cerrar el teclado.
             TODO: Darle funcionalidad a los botones para que realicen acciones en la db.
             TODO: Crear las strings en strings.xml
          */
     }
+}
+
+const val TAG = "INSERT"
+fun pacienteInsert(paciente: Paciente) {
+    Log.d(TAG, paciente.toString())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
