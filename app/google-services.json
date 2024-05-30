@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "816473793248",
-    "project_id": "citaspedia-5665a",
-    "storage_bucket": "citaspedia-5665a.appspot.com"
+    "project_number": "199559704301",
+    "project_id": "citaspedia-8ac0f",
+    "storage_bucket": "citaspedia-8ac0f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:816473793248:android:2de22c836a43b40c28e685",
+        "mobilesdk_app_id": "1:199559704301:android:969dd0fbc91af3822ca6e4",
         "android_client_info": {
           "package_name": "com.example.citaspedia"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCnwptjoRj3vW-dZ-dtXCEmPh6HxieCJE0"
+          "current_key": "AIzaSyDlJZfM31qtux3b5mpjHSPbQs1_Xg8K_aQ"
         }
       ],
       "services": {

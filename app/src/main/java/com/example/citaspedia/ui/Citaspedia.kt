@@ -1,16 +1,21 @@
 package com.example.citaspedia.ui
 
+import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -19,9 +24,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,15 +50,23 @@ import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.main_text
 import com.example.citaspedia.ui.theme.background_form
 import com.example.citaspedia.ui.theme.denied_button
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.citaspedia.LoginScreen
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 @Composable
-fun Citaspedia() {
+fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
+              // onNextButtonClicked: (Int) -> Unit,
+               modifier: Modifier = Modifier) {
+    //val banderanumeros: Boolean=false
+    val gameuiState by gameViewModel.uiState.collectAsState()
     val paciente = remember { Paciente() }
 
     Scaffold(
-        topBar = {
+       /* topBar = {
             CitaspediaTopAppBar()
-        }
+        }*/
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,6 +77,7 @@ fun Citaspedia() {
                 .background(background_form)
         ) {
             Spacer(modifier = Modifier.padding(16.dp))
+
             Text(
                 text = stringResource(id = R.string.nombre),
                 textAlign = TextAlign.Start,
@@ -68,40 +86,74 @@ fun Citaspedia() {
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = paciente.nombre.value,
-                onValueChange = { newValue ->
-                    paciente.nombre.value = newValue
-                },
+
+                    value = //if (contieneNumeros(paciente.nombre.value)) {
+                    //   ""
+                   // } else{
+                        paciente.nombre.value,
+                   // },
+                    onValueChange = { newValue ->
+                       if(!contieneNumeros(newValue)){ paciente.nombre.value = newValue}else{ gameViewModel.banderanumeros=true
+                           gameViewModel.help()
+                      }
+                    }
+
+                 ,
+
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_nombre
             )
 
             Text(
-                text = "Edad:",
+                text = stringResource(id = R.string.edad),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                value = paciente.edad.value,
+                //gameViewModel.banderanumeros=true,
+                      //  gameViewModel.help(),
+                value =paciente.edad.value
+                ,
                 onValueChange = { newValue ->
-                    paciente.edad.value = newValue
+                    if(!contieneLetras(newValue)){ paciente.edad.value = newValue}else{ gameViewModel.banderaletras=true
+                        gameViewModel.help_edad()
+                    }
+
                 },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_edad
             )
-
             Text(
-                text = "Curp:",
+                text = stringResource(id = R.string.sexo),
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 56.dp)
+            )
+            OutlinedTextField(
+                value = paciente.sexo.value,
+                onValueChange = { newValue ->
+                    paciente.sexo.value = newValue
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+                isError =gameuiState.error_sexo
+            )
+            Text(
+                text = stringResource(id = R.string.curp),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,11 +169,11 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_curp
             )
 
             Text(
-                text = "Motivo de ingreso:",
+                text = stringResource(id = R.string.motivoingreso),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,11 +189,11 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_ingreso
             )
 
             Text(
-                text = "Motivo de lesión:",
+                text = stringResource(id = R.string.motivolesion),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -157,11 +209,11 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_lesion
             )
 
             Text(
-                text = "Peso:",
+                text = stringResource(id = R.string.peso),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -177,11 +229,11 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_peso
             )
 
             Text(
-                text = "Temperatura:",
+                text = stringResource(id = R.string.temperatura),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -197,11 +249,11 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_tempperatura
             )
 
             Text(
-                text = "Talla:",
+                text = stringResource(id = R.string.talla),
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -217,7 +269,7 @@ fun Citaspedia() {
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = false
+                isError = gameuiState.error_talla
             )
             Spacer(modifier = Modifier.padding(16.dp))
             Row(
@@ -246,12 +298,18 @@ fun Citaspedia() {
             Spacer(modifier = Modifier.padding(16.dp))
         }
         /*
-            TODO: Falta poner el cuadro de texto para Sexo.
+            TODO: Falta poner el cuadro de texto para Sexo. ya
             TODO: Poder insertar texto en los campos y guardarlos en variables.
             TODO: Poder navegar entre cuadros de texto sin tener que cerrar el teclado.
             TODO: Darle funcionalidad a los botones para que realicen acciones en la db.
-            TODO: Crear las strings en strings.xml
+            TODO: Crear las strings en strings.xml ya
          */
+    }
+    if(gameuiState.hayerrornum){
+    errornum()
+    }
+    if(gameuiState.hayerrorlet){
+        errorlet()
     }
 }
 
@@ -285,6 +343,100 @@ fun CitaspediaTopAppBar(
         }
     )
 }
+//@Composable
+fun contieneNumeros(cadena: String): Boolean {
+    val regex = "\\d".toRegex()
+
+
+    return regex.containsMatchIn(cadena)
+}
+fun contieneLetras(cadena: String): Boolean {
+    val regex = "[a-zA-Z]".toRegex()
+    return regex.containsMatchIn(cadena)
+
+}
+
+fun curp(cadena: String): Boolean {
+    var tamano = cadena.length
+    if(tamano!=18){
+        return false
+    }
+    val parte_1 = cadena.substring(0,4)
+
+    val regex ="\\d".toRegex()
+    if(regex.containsMatchIn(parte_1)){
+        return false
+    }
+    val parte_2 = cadena.substring(4,10)
+    val regex2 = "[a-zA-Z]".toRegex()
+    if(regex2.containsMatchIn(parte_2)){
+        return false
+    }
+    val parte_3 = cadena.substring(10,16)
+    val regex3 = "\\d".toRegex()
+    if(regex3.containsMatchIn(parte_3)){
+        return false
+    }
+    return true
+}
+@Composable
+private fun errornum(
+    gameViewModel: GameViewModel =   viewModel(),
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = {
+            // Dismiss the dialog when the user clicks outside the dialog or on the back
+            // button. If you want to disable that functionality, simply use an empty
+            // onCloseRequest.
+        },
+        title = { Text(text = stringResource(R.string.error1)) },
+        // text = { Text(text = stringResource(R.string.you_scored, score)) },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    gameViewModel.errornumeros()
+                }
+            ) {
+                Text(text = stringResource(R.string.exit))
+            }
+        },
+        confirmButton = {
+
+        }
+    )
+}
+
+@Composable
+private fun errorlet(
+    gameViewModel: GameViewModel =   viewModel(),
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = {
+            // Dismiss the dialog when the user clicks outside the dialog or on the back
+            // button. If you want to disable that functionality, simply use an empty
+            // onCloseRequest.
+        },
+        title = { Text(text = stringResource(R.string.error2)) },
+        // text = { Text(text = stringResource(R.string.you_scored, score)) },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    gameViewModel.errorletras()
+                }
+            ) {
+                Text(text = stringResource(R.string.exit))
+            }
+        },
+        confirmButton = {
+
+        }
+    )
+}
+
 
 @Preview
 @Composable
@@ -293,7 +445,7 @@ fun PreviewCitaspediaTopAppBar() {
        CitaspediaTopAppBar()
    }
 }
-
+/*
 @Preview
 @Composable
 fun PreviewCitaspedia() {
@@ -301,3 +453,4 @@ fun PreviewCitaspedia() {
         Citaspedia()
     }
 }
+*/
