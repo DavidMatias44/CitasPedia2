@@ -54,6 +54,8 @@ import com.example.citaspedia.ui.Citaspedia
 import com.example.citaspedia.ui.theme.main_text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.platform.testTag
+
 enum class CitasScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     Citas(title = R.string.citas),
@@ -143,6 +145,7 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
 }
 
 @Composable
+
 //usuario: user@gmail.com contraseña: 123456
 fun LoginScreen( navController: NavHostController = rememberNavController(),
                  viewModel: GameViewModel = viewModel(),
@@ -172,7 +175,8 @@ fun LoginScreen( navController: NavHostController = rememberNavController(),
                     //firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
                     //navController.navigate(CitasScreen.Pacientes.name)
                     val nombre=user?.email.toString()
-                    Toast.makeText(context, "Bienvenido: $nombre", Toast.LENGTH_SHORT).show()
+                    val texto = "Bienvenido: $nombre"
+                    Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
                     onNextButtonClicked()
                 } else {
                     println(" no inicia sesion")
@@ -198,23 +202,29 @@ fun LoginScreen( navController: NavHostController = rememberNavController(),
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("emailTextField")
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = password,
-            onValueChange = { password = it  },
+            onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("passwordTextField")
         )
         Spacer(modifier = Modifier.height(16.dp))
         //val imageView = findViewById<ImageView>(R.id.imageView)
         Button(
             onClick = { signIn(email, password, onNextButtonClicked) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("loginButton"),
             enabled = !isLoading
-        ) {
+        ){
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.primary,

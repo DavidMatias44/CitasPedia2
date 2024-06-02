@@ -10,6 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+
         applicationId = "com.example.citaspedia"
         minSdk = 34
         targetSdk = 34
@@ -52,7 +53,17 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.1.0")
     implementation(libs.androidx.core.ktx)
+    androidTestImplementation ("androidx.test:runner:1.5.2")
+    androidTestImplementation ("androidx.test:rules:1.5.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.1.0")
+    implementation ("androidx.compose.ui:ui-tooling:1.1.0")
+    implementation ("androidx.compose.ui:ui-test-manifest:1.1.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

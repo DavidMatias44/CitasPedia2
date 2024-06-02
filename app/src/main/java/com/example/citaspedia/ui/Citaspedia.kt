@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,15 +57,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
-fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
-              // onNextButtonClicked: (Int) -> Unit,
-               modifier: Modifier = Modifier) {
-    //val banderanumeros: Boolean=false
+fun Citaspedia(gameViewModel: GameViewModel = viewModel(), modifier: Modifier = Modifier) {
     val gameuiState by gameViewModel.uiState.collectAsState()
     val paciente = remember { Paciente() }
 
     Scaffold(
-       /* topBar = {
+        /* topBar = {
             CitaspediaTopAppBar()
         }*/
     ) {
@@ -86,20 +84,16 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-
-                    value = //if (contieneNumeros(paciente.nombre.value)) {
-                    //   ""
-                   // } else{
-                        paciente.nombre.value,
-                   // },
-                    onValueChange = { newValue ->
-                       if(!contieneNumeros(newValue)){ paciente.nombre.value = newValue}else{ gameViewModel.banderanumeros=true
-                           gameViewModel.help()
-                      }
+                value = paciente.nombre.value,
+                onValueChange = { newValue ->
+                    if (!contieneNumeros(newValue)) {
+                        paciente.nombre.value = newValue
+                    } else {
+                        gameViewModel.banderanumeros = true
+                        gameViewModel.help()
                     }
-
-                 ,
-
+                },
+                modifier = Modifier.testTag("nombreTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -116,16 +110,16 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                     .padding(start = 56.dp)
             )
             OutlinedTextField(
-                //gameViewModel.banderanumeros=true,
-                      //  gameViewModel.help(),
-                value =paciente.edad.value
-                ,
+                value = paciente.edad.value,
                 onValueChange = { newValue ->
-                    if(!contieneLetras(newValue)){ paciente.edad.value = newValue}else{ gameViewModel.banderaletras=true
+                    if (!contieneLetras(newValue)) {
+                        paciente.edad.value = newValue
+                    } else {
+                        gameViewModel.banderaletras = true
                         gameViewModel.help_edad()
                     }
-
                 },
+                modifier = Modifier.testTag("edadTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -133,6 +127,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 ),
                 isError = gameuiState.error_edad
             )
+
             Text(
                 text = stringResource(id = R.string.sexo),
                 textAlign = TextAlign.Start,
@@ -145,13 +140,15 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.sexo.value = newValue
                 },
+                modifier = Modifier.testTag("sexoTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError =gameuiState.error_sexo
+                isError = gameuiState.error_sexo
             )
+
             Text(
                 text = stringResource(id = R.string.curp),
                 textAlign = TextAlign.Start,
@@ -164,6 +161,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.curp.value = newValue
                 },
+                modifier = Modifier.testTag("curpTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -184,6 +182,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.motivoIngreso.value = newValue
                 },
+                modifier = Modifier.testTag("moingTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -204,6 +203,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.motivoLesion.value = newValue
                 },
+                modifier = Modifier.testTag("motlesTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -224,6 +224,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.peso.value = newValue
                 },
+                modifier = Modifier.testTag("pesoTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -244,6 +245,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.temperatura.value = newValue
                 },
+                modifier = Modifier.testTag("tempTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -264,6 +266,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     paciente.talla.value = newValue
                 },
+                modifier = Modifier.testTag("tallaTextField"),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -271,12 +274,12 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 ),
                 isError = gameuiState.error_talla
             )
-            Spacer(modifier = Modifier.padding(16.dp))
-            Row(
 
-            ) {
+            Spacer(modifier = Modifier.padding(16.dp))
+            Row {
                 Button(
                     onClick = {},
+                    modifier = Modifier.testTag("CancelarButton"),
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = denied_button
@@ -287,6 +290,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = { pacienteInsert(paciente) },
+                    modifier = Modifier.testTag("AceptarButton"),
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
@@ -296,22 +300,24 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 }
             }
             Spacer(modifier = Modifier.padding(16.dp))
+            /*
+           TODO: Falta poner el cuadro de texto para Sexo. ya
+           TODO: Poder insertar texto en los campos y guardarlos en variables.
+           TODO: Poder navegar entre cuadros de texto sin tener que cerrar el teclado.
+           TODO: Darle funcionalidad a los botones para que realicen acciones en la db.
+           TODO: Crear las strings en strings.xml ya
+        */
         }
-        /*
-            TODO: Falta poner el cuadro de texto para Sexo. ya
-            TODO: Poder insertar texto en los campos y guardarlos en variables.
-            TODO: Poder navegar entre cuadros de texto sin tener que cerrar el teclado.
-            TODO: Darle funcionalidad a los botones para que realicen acciones en la db.
-            TODO: Crear las strings en strings.xml ya
-         */
-    }
-    if(gameuiState.hayerrornum){
-    errornum()
-    }
-    if(gameuiState.hayerrorlet){
-        errorlet()
+
+        if (gameuiState.hayerrornum) {
+            errornum()
+        }
+        if (gameuiState.hayerrorlet) {
+            errorlet()
+        }
     }
 }
+
 
 const val TAG = "INSERT"
 fun pacienteInsert(paciente: Paciente) {
