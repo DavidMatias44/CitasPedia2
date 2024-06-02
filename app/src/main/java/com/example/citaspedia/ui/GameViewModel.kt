@@ -15,8 +15,9 @@ import kotlinx.coroutines.flow.update
 class GameViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(GameuiState())
     val uiState: StateFlow<GameuiState> = _uiState.asStateFlow()
-     var banderanumeros: Boolean = false
+    var banderanumeros: Boolean = false
     var banderaletras: Boolean = false
+
     var userGuess by mutableStateOf("")
         private set
 
@@ -34,7 +35,7 @@ class GameViewModel: ViewModel() {
 
     fun errornumeros(){
         banderanumeros=false
-            _uiState.update { currentState ->
+        _uiState.update { currentState ->
                 currentState.copy(hayerrornum = false) }
         _uiState.update { currentState ->
             currentState.copy(error_nombre = false)

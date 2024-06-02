@@ -1,5 +1,6 @@
 package com.example.citaspedia
 
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -14,15 +15,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,7 +47,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -52,14 +54,26 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.citaspedia.ui.Citaspedia
 import com.example.citaspedia.ui.theme.main_text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import com.example.citaspedia.ui.Pantalla_ini
+import com.example.citaspedia.ui.Recetas
+import com.example.citaspedia.data.Paciente
+import com.example.citaspedia.ui.Citas
+import com.example.citaspedia.ui.Expedientes
+import com.example.citaspedia.ui.InterfazList
+import com.example.citaspedia.ui.PacienteRepo
+import com.example.citaspedia.ui.PacientesItem
+import com.example.citaspedia.ui.PacientesList
+import com.example.citaspedia.ui.pacienteRead
+import com.google.firebase.firestore.ktx.firestore
+
 enum class CitasScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
+    Principal(title = R.string.pantalla_principal),
     Citas(title = R.string.citas),
     Expedientes(title = R.string.expedientes),
     Recetas(title = R.string.recetas),
-    Pacientes(title = R.string.pacientes)
+    Pacientes(title = R.string.pacientes),
+    Mostrar(title = R.string.pacientes)
 }
 
 
@@ -78,6 +92,7 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
+
         }
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
@@ -94,7 +109,7 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                     // quantityOptions = DataSource.quantityOptions,
                     onNextButtonClicked = {
                         //viewModel.setQuantity(it)
-                        navController.navigate(CitasScreen.Pacientes.name)
+                        navController.navigate(CitasScreen.Principal.name)
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -102,20 +117,64 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                 )
 
             }
+            composable(route = CitasScreen.Principal.name) {
+                Pantalla_ini(
+                    // quantityOptions = DataSource.quantityOptions,
+                    PacienteButtonClicked = {
+                         //viewModel.setQuantity(it)
+                          navController.navigate(CitasScreen.Pacientes.name)
+                     },
+                    ExpedienteButtonClicked = {
+                         //viewModel.setQuantity(it)
+                         navController.navigate(CitasScreen.Expedientes.name)
+                     },
+                    RecetaButtonClicked = {
+                        //viewModel.setQuantity(it)
+                        navController.navigate(CitasScreen.Recetas.name)
+                    },
+                    CitaButtonClicked = {
+                        navController.navigate(CitasScreen.Citas.name)
+
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
             composable(route = CitasScreen.Pacientes.name) {
                 Citaspedia(
                     // quantityOptions = DataSource.quantityOptions,
-                   /* onNextButtonClicked = {
-                        //viewModel.setQuantity(it)
-                        // navController.navigate(CupcakeScreen.Flavor.name)
+                    MostrarButtonClicked = {
+
+                        navController.navigate(CitasScreen.Mostrar.name)
+                    },
+                    CancelarButtonClicked = {
+                        navController.navigate(CitasScreen.Principal.name)
+
                     },
                     modifier = Modifier
-                        //.fillMaxSize()
-                        //.padding(dimensionResource(R.dimen.padding_medium))*/
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
             composable(route = CitasScreen.Expedientes.name) {
-                Citaspedia(
+                Expedientes(
+                    // quantityOptions = DataSource.quantityOptions,
+                    /* onNextButtonClicked = {
+                         //viewModel.setQuantity(it)
+                         // navController.navigate(CupcakeScreen.Flavor.name)
+                     },*/
+                     CancelarButtonClicked = {
+                        navController.navigate(CitasScreen.Principal.name)
+
+                    },
+                     modifier = Modifier
+                         .fillMaxSize()
+                         .padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
+            composable(route = CitasScreen.Recetas.name) {
+                Recetas(
                     // quantityOptions = DataSource.quantityOptions,
                     /* onNextButtonClicked = {
                          //viewModel.setQuantity(it)
@@ -126,22 +185,93 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                          //.padding(dimensionResource(R.dimen.padding_medium))*/
                 )
             }
-            composable(route = CitasScreen.Recetas.name) {
-                Citaspedia(
+            composable(route = CitasScreen.Mostrar.name) {
+
+
+             InterfazList(
+
+                   //pacientes = ()
                     // quantityOptions = DataSource.quantityOptions,
-                    /* onNextButtonClicked = {
+                    /*UpdateButtonClicked = {
                          //viewModel.setQuantity(it)
                          // navController.navigate(CupcakeScreen.Flavor.name)
                      },
+                    DeleteButtonClicked = {
+
+                    },
                      modifier = Modifier
                          //.fillMaxSize()
                          //.padding(dimensionResource(R.dimen.padding_medium))*/
                 )
+            }
+            composable(route = CitasScreen.Citas.name) {
+
+
+                Citas(
+
+                    //obtenPaciente()
+                    // quantityOptions = DataSource.quantityOptions,
+                    CancelarButtonClicked = {
+                        navController.navigate(CitasScreen.Principal.name)
+
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
+
             }
         }
     }
 }
+@Composable
+fun obtenPaciente() {
+    val db = Firebase.firestore
 
+    //val listaPersonas = mutableListOf<Paciente>()
+
+    db.collection("pacientes")//.document("meq4CKpLUagt7z9aHFbO")
+        .get()
+        .addOnSuccessListener { result ->
+            // if (document != null && document.exists()) {
+            // Acceder a cada campo
+            for (document in result) {
+                val pacien = Paciente()
+                val resulData = document.data
+
+                pacien.nombre.value = document.getString("Nombre").toString()
+
+                pacien.edad.value =
+                    document.getString("Edad").toString() // Convertir a Int si es necesario
+
+                pacien.sexo.value = document.getString("Sexo").toString()
+
+                pacien.responsable.value = document.getString("Responsable").toString()
+
+                pacien.num_telefonico.value = document.getString("Numero").toString()
+
+
+                PacienteRepo.pacientes.add(pacien)
+
+            }
+
+
+              //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
+            for(paciente in PacienteRepo.pacientes){
+Log.w("Listaderepo", paciente.nombre.value)//}
+            //} else {
+             //   println("No se encontró el documento")
+           }
+           /* object Repositorio{
+               val pacientes= listaPersonas
+            }*/
+        }
+        .addOnFailureListener { exception ->
+            println("Error al obtener el documento: $exception")
+        }
+
+   // return listaPersonas
+}
 @Composable
 //usuario: user@gmail.com contraseña: 123456
 fun LoginScreen( navController: NavHostController = rememberNavController(),
@@ -257,7 +387,18 @@ fun CitaspediaTopAppBar(
                     style = MaterialTheme.typography.displayLarge
                 )
             }
-        }
+        },
+       navigationIcon = {
+           if (canNavigateBack) {
+               IconButton(onClick = navigateUp) {
+                   Icon(
+                       imageVector = Icons.Filled.ArrowBack,
+                       contentDescription = stringResource(R.string.back_button)
+                   )
+               }
+           }
+       }
     )
+
 }
 

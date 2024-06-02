@@ -27,6 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.ui.res.painterResource
+import com.example.citaspedia.ui.Pantalla_ini
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 ) {*/
                    //Citaspedia()
                    CitasApp()
+                //Pantalla_ini()
                 //}
             }
         }
