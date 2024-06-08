@@ -26,6 +26,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+//import androidx.compose.material3.Text
+//import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -54,7 +56,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.citaspedia.ui.Citaspedia
 import com.example.citaspedia.ui.theme.main_text
-<<<<<<< HEAD
 import com.example.citaspedia.ui.Pantalla_ini
 import com.example.citaspedia.ui.Recetas
 import com.example.citaspedia.data.Paciente
@@ -64,13 +65,16 @@ import com.example.citaspedia.ui.InterfazList
 import com.example.citaspedia.ui.PacienteRepo
 import com.example.citaspedia.ui.PacientesItem
 import com.example.citaspedia.ui.PacientesList
-import com.example.citaspedia.ui.pacienteRead
+//import com.example.citaspedia.ui.pacienteRead
 import com.google.firebase.firestore.ktx.firestore
-=======
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.platform.testTag
->>>>>>> 0cbe69709d3f598dd78b1c8c3e9b1665e3f9e519
+import androidx.compose.ui.semantics.SemanticsProperties.Text
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
+import com.example.citaspedia.ui.mostrar
+
 
 enum class CitasScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
@@ -79,7 +83,8 @@ enum class CitasScreen(@StringRes val title: Int) {
     Expedientes(title = R.string.expedientes),
     Recetas(title = R.string.recetas),
     Pacientes(title = R.string.pacientes),
-    Mostrar(title = R.string.pacientes)
+    Mostrar(title = R.string.pacientes),
+    Mostrarcita(title = R.string.citas)
 }
 
 
@@ -214,7 +219,10 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
 
 
                 Citas(
+                    MostrarButtonClicked = {
 
+                        navController.navigate(CitasScreen.Mostrarcita.name)
+                    },
                     //obtenPaciente()
                     // quantityOptions = DataSource.quantityOptions,
                     CancelarButtonClicked = {
@@ -226,6 +234,25 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                         .padding(dimensionResource(R.dimen.padding_medium))
                 )
 
+            }
+            composable(route = CitasScreen.Mostrarcita.name) {
+
+
+                mostrar(
+
+                    //pacientes = ()
+                    // quantityOptions = DataSource.quantityOptions,
+                    /*UpdateButtonClicked = {
+                         //viewModel.setQuantity(it)
+                         // navController.navigate(CupcakeScreen.Flavor.name)
+                     },
+                    DeleteButtonClicked = {
+
+                    },
+                     modifier = Modifier
+                         //.fillMaxSize()
+                         //.padding(dimensionResource(R.dimen.padding_medium))*/
+                )
             }
         }
     }
@@ -309,6 +336,7 @@ fun LoginScreen( navController: NavHostController = rememberNavController(),
                     //firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
                     //navController.navigate(CitasScreen.Pacientes.name)
                     val nombre=user?.email.toString()
+
                     val texto = "Bienvenido: $nombre"
                     Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
                     onNextButtonClicked()

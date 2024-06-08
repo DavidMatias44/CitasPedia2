@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "com.example.citaspedia"
     compileSdk = 34
@@ -56,6 +57,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.1.0")
     implementation(libs.androidx.core.ktx)
+    //implementation(libs.androidx.material3.android)
     androidTestImplementation ("androidx.test:runner:1.5.2")
     androidTestImplementation ("androidx.test:rules:1.5.0")
     androidTestImplementation ("androidx.test.ext:junit:1.1.3")

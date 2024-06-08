@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.citaspedia.R
 import com.example.citaspedia.data.Cita
-import com.example.citaspedia.data.Paciente
 import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.background_form
 import com.example.citaspedia.ui.theme.denied_button
@@ -41,7 +40,8 @@ import com.google.firebase.ktx.Firebase
 fun Citas(gameViewModel: GameViewModel =   viewModel(),
     // onNextButtonClicked: (Int) -> Unit,
                 modifier: Modifier = Modifier,
-                CancelarButtonClicked: () -> Unit = {}
+                CancelarButtonClicked: () -> Unit = {},
+          MostrarButtonClicked: () -> Unit = {},
 ) {
     //val banderanumeros: Boolean=false
     val gameuiState by gameViewModel.uiState.collectAsState()
@@ -94,7 +94,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
                 ,
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(50.dp),
                 shape = RoundedCornerShape(10.dp),
 
                 colors = TextFieldDefaults.colors(
@@ -125,7 +125,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(50.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -153,7 +153,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                     cita.nombre_paciente.value = newValue
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(50.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -185,6 +185,16 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                     )
                 ) {
                     Text("Registrar")
+                }
+                Spacer(modifier = Modifier.padding(16.dp))
+                Button(
+                    onClick = MostrarButtonClicked ,
+                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = approve_button
+                    )
+                ) {
+                    Text("Mostrar")
                 }
 
             }
@@ -221,4 +231,117 @@ fun citaInsert(cita: Cita) {
 
     // Log.d(TAG,"sss ${id.id}")
 
+}
+
+@Composable
+fun mostrar(modifier: Modifier = Modifier) {
+
+
+    /* Important: It is not a good practice to access data source directly from the UI.
+        In later units you will learn how to use ViewModel in such scenarios that takes the
+        data source as a dependency and exposes heroes.
+         */
+    val db = Firebase.firestore
+    var idColeccion:String=""
+    //val listaPersonas = PacienteRepo.pacientes
+    db.collection("citas")//.document("meq4CKpLUagt7z9aHFbO")
+        .get()
+        .addOnSuccessListener { result ->
+            // if (document != null && document.exists()) {
+            // Acceder a cada campo
+            for (document in result) {
+                val cita= Cita()
+                idColeccion = document.id
+                cita.fecha.value = document.getString("Fecha").toString()
+
+                cita.hora.value =
+                    document.getString("Hora").toString() // Convertir a Int si es necesario
+
+                cita.nombre_paciente.value = document.getString("Nombre").toString()
+
+
+                CitasRepo.citas.add(cita)
+
+            }
+
+            //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
+            //for(paciente in listaPersonas){
+            for (cita in CitasRepo.citas) {
+                Log.w("Listadecita", cita.fecha.value)//}
+                Log.w("Listadecita", cita.hora.value)
+                Log.w("Listadecita", cita.nombre_paciente.value)
+                //} else {
+                //   println("No se encontró el documento")
+            }
+
+            //} else {
+            //   println("No se encontró el documento")
+            //   }
+        }
+        .addOnFailureListener { exception ->
+            println("Error al obtener el documento: $exception")
+        }
+
+
+    val listacitas =
+       CitasRepo.citas
+    muestracita(listacitas,idColeccion)
+
+    //PacientesList(pacientes = listapacientes)
+    /* for(pacient in PacienteRepo.pacientes) {
+        PacientesItem(paciente = pacient,
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                // Animate each list item to slide in vertically
+               )
+    }
+    val visibleState = remember {
+        MutableTransitionState(false).apply {
+            // Start the animation immediately.
+            targetState = true
+        }
+    }
+
+    // Fade in entry animation for the entire list
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(
+            animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy)
+        ),
+        exit = fadeOut(),
+        modifier = modifier
+    ) {
+    LazyColumn() {
+        itemsIndexed(PacienteRepo.pacientes) { index, paciente ->
+            PacientesItem(
+                paciente = paciente,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    //Animate each list item to slide in vertically
+                    .animateEnterExit(
+                        enter = slideInVertically(
+                            animationSpec = spring(
+                                stiffness = Spring.StiffnessVeryLow,
+                                dampingRatio = Spring.DampingRatioLowBouncy
+                            ),
+                            initialOffsetY = { it * (index + 1) } // staggered entrance
+                        )
+                    )
+            )
+        }
+    }
+}*/
+
+
+
+}
+
+@Composable
+fun muestracita(listacitas: MutableList<Cita>, idColeccion:String) {
+    for (cita in listacitas) {
+
+        Text(text = "\n${cita.fecha.value}\n${cita.hora.value}\n${cita.nombre_paciente.value}\n")
+        Spacer(modifier = Modifier.padding(16.dp))
+
+    }
 }

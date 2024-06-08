@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -51,7 +52,8 @@ fun PacientesList(
     modifier: Modifier = Modifier,
   //  contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    val visibleState = remember {
+
+   /* val visibleState = remember {
         MutableTransitionState(false).apply {
             // Start the animation immediately.
             targetState = true
@@ -66,15 +68,16 @@ fun PacientesList(
         ),
         exit = fadeOut(),
         modifier = modifier
-    ) {
+    ) */
+    //Scaffold{it->
         LazyColumn() {
-            itemsIndexed(pacientes) { index, paciente ->
+            items(pacientes.size) {  paciente ->
                 PacientesItem(
-                    paciente = paciente,
+                    paciente = pacientes[paciente],
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         // Animate each list item to slide in vertically
-                        .animateEnterExit(
+                       /* .animateEnterExit(
                             enter = slideInVertically(
                                 animationSpec = spring(
                                     stiffness = Spring.StiffnessVeryLow,
@@ -82,11 +85,11 @@ fun PacientesList(
                                 ),
                                 initialOffsetY = { it * (index + 1) } // staggered entrance
                             )
-                        )
+                        )*/
                 )
             }
         }
-    }
+  //  }
 }
 
 @Composable

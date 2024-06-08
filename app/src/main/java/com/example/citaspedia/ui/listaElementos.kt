@@ -79,14 +79,17 @@ fun InterfazList(modifier: Modifier = Modifier) {
         }
 
 
-    val listapacientes = PacienteRepo.pacientes
+   val listapacientes =
+       PacienteRepo.pacientes
+
+    PacientesList(pacientes = listapacientes)
     /* for(pacient in PacienteRepo.pacientes) {
         PacientesItem(paciente = pacient,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 // Animate each list item to slide in vertically
                )
-    }*/
+    }
     val visibleState = remember {
         MutableTransitionState(false).apply {
             // Start the animation immediately.
@@ -122,7 +125,7 @@ fun InterfazList(modifier: Modifier = Modifier) {
             )
         }
     }
-}
+}*/
 
 
 

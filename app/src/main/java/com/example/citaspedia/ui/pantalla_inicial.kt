@@ -24,7 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.citaspedia.R
-
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.ZonedDateTime
+import java.time.ZoneId
+import java.time.LocalDate
+import java.time.LocalTime
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
@@ -32,6 +37,18 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
                  RecetaButtonClicked: () -> Unit = {},
                  CitaButtonClicked: () -> Unit = {},
                  modifier: Modifier = Modifier) {
+    val currentDate = LocalDate.now()
+
+    // Obtener la hora actual
+    val currentTime = LocalTime.now()
+
+    // Formatear la fecha
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formattedDate = currentDate.format(dateFormatter)
+
+    // Formatear la hora
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val formattedTime = currentTime.format(timeFormatter)
 
     Scaffold(
         topBar = {
@@ -56,6 +73,9 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("$formattedDate $formattedTime")
+
             Spacer(modifier = Modifier.height(16.dp))
             //val imageView = findViewById<ImageView>(R.id.imageView)
             Button(
