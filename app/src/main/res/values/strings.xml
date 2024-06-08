@@ -1,4 +1,41 @@
 <resources>
     <string name="app_name">CitasPedia</string>
     <string name="nombre">Nombre completo:</string>
+    <string name="edad">Edad :</string>
+    <string name="sexo">Sexo:</string>
+    <string name="curp">CURP:</string>
+    <string name="motivoingreso">Motivo de ingreso:</string>
+    <string name="motivolesion">Motivo de lesión:</string>
+    <string name="peso">Peso:</string>
+    <string name="temperatura">Temperatura:</string>
+    <string name="talla">Talla:</string>
+    <string name="error1">El nombre no debe llevar números:</string>
+    <string name="error2">El nombre no debe llevar letras:</string>
+    <string name="exit">Cerrar</string>
+    <string name="citas">Citas</string>
+    <string name="expedientes">Expedientes</string>
+    <string name="recetas">Recetas</string>
+    <string name="pacientes">Pacientes</string>
+    <string name="pantalla_principal">Bienvenido</string>
+    <string name="responsable">Responsable:</string>
+    <string name="num_responsable">Número telefonico:</string>
+
+    <string name="motivo_consulta">Motivo de la consulta:</string>
+    <string name="exploracion_fi">Exploración física:</string>
+    <string name="diagnostico">Diagnóstico:</string>
+    <string name="tratamiento">Tratamiento:</string>
+    <string name="examenes_lab">Examenes de laboratorio:</string>
+    <string name="pronostico">Pronóstico:</string>
+
+    <string name="fecha_cita">Fecha:</string>
+    <string name="hora_cita">Hora:</string>
+    <string name="nombre_paciente">Nombre del paciente:</string>
+
+
+
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="thickness_divider">1dp</dimen>
+    <string name="back_button">Back</string>
+
 </resources>
