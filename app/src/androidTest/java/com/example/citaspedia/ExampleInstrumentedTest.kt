@@ -11,8 +11,7 @@ import com.example.citaspedia.ui.Citaspedia
 import org.junit.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.*
+import com.example.citaspedia.ui.LoginScreen
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest

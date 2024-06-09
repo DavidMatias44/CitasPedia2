@@ -36,6 +36,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.citaspedia.data.Paciente
+import com.example.citaspedia.ui.CitasPediaScreen
+import com.example.citaspedia.ui.CitasPediaTopAppBar
+import com.example.citaspedia.ui.CitaspediaTopAppBar
 import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -59,8 +62,8 @@ var idd: MutableState<String> =  mutableStateOf("")
 @Composable
 fun mostrarP(navController: NavHostController = rememberNavController(), modifier: Modifier = Modifier) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = CitasScreen.valueOf(
-        backStackEntry?.destination?.route ?: CitasScreen.Start.name
+    val currentScreen = CitasPediaScreen.valueOf(
+        backStackEntry?.destination?.route ?: CitasPediaScreen.Login.name
     )
     val context = LocalContext.current
     var pacientes by remember { mutableStateOf(listOf<Paciente>()) }
@@ -89,8 +92,7 @@ fun mostrarP(navController: NavHostController = rememberNavController(), modifie
 
     Scaffold(
         topBar = {
-            CitaspediaTopAppBar(
-                currentScreen = currentScreen,
+            CitasPediaTopAppBar(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
