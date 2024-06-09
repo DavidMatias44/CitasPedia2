@@ -48,6 +48,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -122,7 +123,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
 
                 ,
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("nombreTextField"),
                 shape = RoundedCornerShape(10.dp),
 
                 colors = TextFieldDefaults.colors(
@@ -153,7 +154,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
 
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("EdadTextField"),
                 shape = RoundedCornerShape(10.dp),
 
                 colors = TextFieldDefaults.colors(
@@ -195,7 +196,8 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
             ) {
                 Checkbox(
                     checked = checkedState,
-                    onCheckedChange = null // null recommended for accessibility with screenreaders
+                    onCheckedChange = null, // null recommended for accessibility with screenreaders
+                    modifier = Modifier.testTag("HombreCheckbox")
                 )
                 Text(
                     text = "Hombre",
@@ -222,7 +224,8 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
             ) {
                 Checkbox(
                     checked = checkedState2,
-                    onCheckedChange = null // null recommended for accessibility with screenreaders
+                    onCheckedChange = null, // null recommended for accessibility with screenreaders
+                    modifier = Modifier.testTag("MujerCheckbox")
                 )
                 Text(
                     text = "Mujer",
@@ -247,7 +250,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                     paciente.responsable.value = newValue
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("Responsabletest"),
                 shape = RoundedCornerShape(10.dp),
 
                 colors = TextFieldDefaults.colors(
@@ -272,7 +275,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                     paciente.num_telefonico.value = newValue
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("Telefonotest"),
                 shape = RoundedCornerShape(10.dp),
 
                 colors = TextFieldDefaults.colors(
@@ -305,6 +308,8 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                     onClick = { isLoading=true
                         pacienteInsert(paciente,checkedState,checkedState2)
                     },
+                    modifier = Modifier
+                        .testTag("RegistrarB"),
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
