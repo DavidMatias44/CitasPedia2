@@ -103,7 +103,7 @@ fun ExpedienteScreen(
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 OutlinedTextField(
-                    value =expediente.exploracion_fisica.value,
+                    value = expediente.exploracion_fisica.value,
                     onValueChange = { newValue ->
                         if (!contieneLetras(newValue)) {
                             expediente.exploracion_fisica.value = newValue
@@ -238,7 +238,9 @@ fun ExpedienteScreen(
                     }
                     Spacer(modifier = Modifier.padding(16.dp))
                     Button(
-                        onClick = { /* Implement your action here */ },
+                        onClick = {
+                            expediente.create()
+                        },
                         shape = RectangleShape,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = approve_button
