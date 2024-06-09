@@ -8,6 +8,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 
 data class Paciente(
+    var id: MutableState<String> =  mutableStateOf("") ,
     var nombre: MutableState<String> = mutableStateOf(""),
     var edad: MutableState<String> = mutableStateOf(""),
     var sexo: MutableState<String> = mutableStateOf(""),
