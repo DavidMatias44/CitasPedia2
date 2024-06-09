@@ -1,33 +1,52 @@
 package com.example.citaspedia.ui
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Intent
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.citaspedia.CitasActivity
 import com.example.citaspedia.R
 import com.example.citaspedia.data.Cita
 import com.example.citaspedia.ui.theme.approve_button
@@ -35,17 +54,31 @@ import com.example.citaspedia.ui.theme.background_form
 import com.example.citaspedia.ui.theme.denied_button
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Calendar
+import com.google.firebase.database.*
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun Citas(gameViewModel: GameViewModel =   viewModel(),
     // onNextButtonClicked: (Int) -> Unit,
-                modifier: Modifier = Modifier,
-                CancelarButtonClicked: () -> Unit = {},
-          MostrarButtonClicked: () -> Unit = {},
+          modifier: Modifier = Modifier,
+          CancelarButtonClicked: () -> Unit = {},
+          MostrarButtonClicked:  @Composable () -> Unit = {},
 ) {
     //val banderanumeros: Boolean=false
+    val context = LocalContext.current
     val gameuiState by gameViewModel.uiState.collectAsState()
     val cita = remember { Cita() }
+    var fecha by remember { mutableStateOf("") }
+    var horaInicio by remember { mutableStateOf("") }
+    var mostrarb by remember { mutableStateOf(true) }
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
 
     Scaffold(
         topBar = {
@@ -84,25 +117,32 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
             OutlinedTextField(
 
 
-                value = cita.fecha.value,
+                value = fecha,
 
-                onValueChange = { newValue ->
-                    if(!contieneLetras(newValue)){cita.fecha.value = newValue}else{ gameViewModel.banderaletras=true
-                        gameViewModel.help()
-                    }
-                }
+                onValueChange = { },
+                label = { Text("Fecha") },
 
-                ,
                 modifier = Modifier
-                    .height(50.dp),
+                    .height(75.dp),
                 shape = RoundedCornerShape(10.dp),
+                readOnly = true,
+
 
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = gameuiState.error_nombre
+                isError = gameuiState.error_nombre,
+                trailingIcon = {
+                    IconButton(onClick = {
+                        DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
+                           cita.fecha.value= "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                        }, year, month, day).show()
+                    }) {
+                        Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Date")
+                    }
+                }
             )
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
@@ -116,23 +156,30 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
             OutlinedTextField(
                 //gameViewModel.banderanumeros=true,
                 //  gameViewModel.help(),
-                value =cita.hora.value
+                value =horaInicio
                 ,
-                onValueChange = { newValue ->
-                    if(!contieneLetras(newValue)){ cita.hora.value = newValue}else{ gameViewModel.banderaletras=true
-                        gameViewModel.help_edad()
-                    }
-
+                onValueChange = {
                 },
+                label = { Text("Hora") },
                 modifier = Modifier
-                    .height(50.dp),
+                    .height(75.dp),
                 shape = RoundedCornerShape(10.dp),
+                readOnly = true,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                isError = gameuiState.error_edad
+                isError = gameuiState.error_edad,
+                trailingIcon = {
+                    IconButton(onClick = {
+                        TimePickerDialog(context, { _, selectedHour, selectedMinute ->
+                           cita.hora.value= "$selectedHour:$selectedMinute"
+                        }, hour, minute, true).show()
+                    }) {
+                        Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Time")
+                    }
+                }
             )
 
 
@@ -178,7 +225,8 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = { citaInsert(cita) },
+                    onClick = { mostrarb=true
+                        citaInsert(cita) },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
@@ -186,10 +234,15 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 ) {
                     Text("Registrar")
                 }
+                val mostrarCitas: () -> Unit = {
+                    val intent = Intent(context, CitasActivity::class.java)
+                    context.startActivity(intent)
+                }
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = MostrarButtonClicked ,
+                    onClick =  mostrarCitas ,
                     shape = RectangleShape,
+                    enabled = mostrarb,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
                     )
@@ -207,7 +260,9 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 fun citaInsert(cita: Cita) {
     //Log.d(TAG, paciente.nombre.toString())
     // Create a new user with a first and last name
+
     val db = Firebase.firestore
+
 
 
     val unacita = hashMapOf(
@@ -224,6 +279,7 @@ fun citaInsert(cita: Cita) {
         .addOnSuccessListener { documentReference ->
             // Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
             id=documentReference.id
+
         }
         .addOnFailureListener { e ->
             Log.w(TAG, "Error adding document", e)
@@ -233,114 +289,106 @@ fun citaInsert(cita: Cita) {
 
 }
 
-@Composable
-fun mostrar(modifier: Modifier = Modifier) {
+
+
+/*fun mostrar(modifier: Modifier = Modifier) {
 
 
     /* Important: It is not a good practice to access data source directly from the UI.
         In later units you will learn how to use ViewModel in such scenarios that takes the
         data source as a dependency and exposes heroes.
          */
+
+    var citas by remember { mutableStateOf(listOf<Cita>()) }
+
     val db = Firebase.firestore
     var idColeccion:String=""
+
+    val viajesRef = db.collection("viajes")
     //val listaPersonas = PacienteRepo.pacientes
-    db.collection("citas")//.document("meq4CKpLUagt7z9aHFbO")
-        .get()
-        .addOnSuccessListener { result ->
-            // if (document != null && document.exists()) {
-            // Acceder a cada campo
-            for (document in result) {
-                val cita= Cita()
-                idColeccion = document.id
-                cita.fecha.value = document.getString("Fecha").toString()
-
-                cita.hora.value =
-                    document.getString("Hora").toString() // Convertir a Int si es necesario
-
-                cita.nombre_paciente.value = document.getString("Nombre").toString()
+    LaunchedEffect(Unit) {
+        db.collection("citas")//.document("meq4CKpLUagt7z9aHFbO")
+            .get()
+            .addOnSuccessListener { result ->
+                val citaList = mutableListOf<Cita>()
+                for (document in result) {
+                    val cita = Cita()
+                    //idColeccion = document.id
+                    cita.fecha = document.getString("Fecha").toString()
+                    cita.hora = document.getString("Hora").toString()
+                    cita.nombre_paciente = document.getString("Nombre").toString()
 
 
-                CitasRepo.citas.add(cita)
+                    citaList.add(cita)
 
-            }
+                }
+                citas = citaList
 
-            //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
-            //for(paciente in listaPersonas){
-            for (cita in CitasRepo.citas) {
-                Log.w("Listadecita", cita.fecha.value)//}
-                Log.w("Listadecita", cita.hora.value)
-                Log.w("Listadecita", cita.nombre_paciente.value)
+                //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
+                //for(paciente in listaPersonas){
+               /* for (cita in CitasRepo.citas) {
+                    Log.w("Listadecita", cita.fecha)//}
+                    Log.w("Listadecita", cita.hora)
+                    Log.w("Listadecita", cita.nombre_paciente)
+                    //} else {
+                    //   println("No se encontró el documento")
+                }*/
+
                 //} else {
                 //   println("No se encontró el documento")
+                //   }
+            }
+            .addOnFailureListener { exception ->
+                println("Error al obtener el documento: $exception")
             }
 
-            //} else {
-            //   println("No se encontró el documento")
-            //   }
-        }
-        .addOnFailureListener { exception ->
-            println("Error al obtener el documento: $exception")
-        }
-
-
-    val listacitas =
-       CitasRepo.citas
-    muestracita(listacitas,idColeccion)
-
-    //PacientesList(pacientes = listapacientes)
-    /* for(pacient in PacienteRepo.pacientes) {
-        PacientesItem(paciente = pacient,
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                // Animate each list item to slide in vertically
-               )
-    }
-    val visibleState = remember {
-        MutableTransitionState(false).apply {
-            // Start the animation immediately.
-            targetState = true
-        }
     }
 
-    // Fade in entry animation for the entire list
-    AnimatedVisibility(
-        visibleState = visibleState,
-        enter = fadeIn(
-            animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy)
-        ),
-        exit = fadeOut(),
-        modifier = modifier
-    ) {
-    LazyColumn() {
-        itemsIndexed(PacienteRepo.pacientes) { index, paciente ->
-            PacientesItem(
-                paciente = paciente,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    //Animate each list item to slide in vertically
-                    .animateEnterExit(
-                        enter = slideInVertically(
-                            animationSpec = spring(
-                                stiffness = Spring.StiffnessVeryLow,
-                                dampingRatio = Spring.DampingRatioLowBouncy
-                            ),
-                            initialOffsetY = { it * (index + 1) } // staggered entrance
-                        )
-                    )
-            )
-        }
-    }
-}*/
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        Text(text = "Citas", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(16.dp))
 
+        LazyColumn {
+            items(citas) { cita ->
+                CitaItem(cita)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+    }
 
 
 }
 
 @Composable
+fun CitaItem(cita: Cita) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+           // Text(text = "ID: ${viaje.id}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Nombre: ${cita.nombre_paciente}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Fecha: ${cita.fecha}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Hora: ${cita.hora}", style = MaterialTheme.typography.bodyLarge)
+            //Text(text = "Asientos disponibles: ${viaje.asientosDisponibles}", style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(8.dp))
+           // Button(onClick = {TomarViaje(viaje.id, viaje.asientosDisponibles )  }) {
+            //    Text(text = "Tomar viaje")
+            //}
+        }
+    }
+}
+*/
+@Composable
 fun muestracita(listacitas: MutableList<Cita>, idColeccion:String) {
     for (cita in listacitas) {
 
-        Text(text = "\n${cita.fecha.value}\n${cita.hora.value}\n${cita.nombre_paciente.value}\n")
+        Text(text = "\n${cita.fecha}\n${cita.hora}\n${cita.nombre_paciente}\n")
         Spacer(modifier = Modifier.padding(16.dp))
 
     }

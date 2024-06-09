@@ -63,18 +63,6 @@ fun Pantalla_ini(
     ) {
         var nombrePaciente by remember { mutableStateOf("") }
 
-        TextField(
-            value = nombrePaciente,
-            onValueChange = { nombrePaciente = it }
-        )
-        Button(
-            onClick = CitaButtonClicked,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true
-        ) {
-            Text("Buscar")
-        }
-
         Spacer(modifier = Modifier.height(45.dp))
         Column(
             modifier = Modifier
@@ -85,6 +73,19 @@ fun Pantalla_ini(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             Text("$formattedDate $formattedTime")
+
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(
+                value = nombrePaciente,
+                onValueChange = { nombrePaciente = it }
+            )
+            Button(
+                onClick = CitaButtonClicked,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true
+            ) {
+                Text("Buscar paciente")
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(

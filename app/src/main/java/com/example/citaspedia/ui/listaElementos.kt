@@ -1,29 +1,13 @@
 package com.example.citaspedia.ui
 
 import android.util.Log
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.citaspedia.data.Paciente
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.runtime.mutableStateOf
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -46,16 +30,15 @@ fun InterfazList(modifier: Modifier = Modifier) {
                 val pacien = Paciente()
                 val resulData = document.data
 
-                pacien.nombre.value = document.getString("Nombre").toString()
+                pacien.nombre = mutableStateOf(document.getString("Nombre").orEmpty())
 
-                pacien.edad.value =
-                    document.getString("Edad").toString() // Convertir a Int si es necesario
+                pacien.edad =mutableStateOf( document.getString("Edad").toString()) // Convertir a Int si es necesario
 
-                pacien.sexo.value = document.getString("Sexo").toString()
+                pacien.sexo= mutableStateOf(document.getString("Sexo").toString())
 
-                pacien.responsable.value = document.getString("Responsable").toString()
+                pacien.responsable = mutableStateOf(document.getString("Responsable").toString())
 
-                pacien.num_telefonico.value = document.getString("Numero").toString()
+                pacien.num_telefonico =mutableStateOf( document.getString("Numero").toString())
 
 
                 PacienteRepo.pacientes.add(pacien)
@@ -64,11 +47,7 @@ fun InterfazList(modifier: Modifier = Modifier) {
 
             //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
             //for(paciente in listaPersonas){
-            for (paciente in PacienteRepo.pacientes) {
-                Log.w("Listaderepo", paciente.nombre.value)//}
-                //} else {
-                //   println("No se encontró el documento")
-            }
+
 
             //} else {
             //   println("No se encontró el documento")
