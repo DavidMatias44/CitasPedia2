@@ -3,9 +3,11 @@ package com.example.citaspedia
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.citaspedia.data.Cita
 import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -56,6 +60,7 @@ class CitasActivity : ComponentActivity() {
         }*/
     }
 }
+var idc: MutableState<String> =  mutableStateOf("")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -73,6 +78,7 @@ fun mostrar(navController: NavHostController = rememberNavController(), modifier
             val result = db.collection("citas").get().await()
             val citaList = result.documents.map { document ->
                 Cita(
+                    id=mutableStateOf(document.id),
                     fecha = mutableStateOf(document.getString("Fecha").orEmpty()),
                     hora = mutableStateOf(document.getString("Hora").orEmpty()),
                     nombre_paciente = mutableStateOf(document.getString("Nombre").orEmpty())
@@ -110,6 +116,34 @@ fun mostrar(navController: NavHostController = rememberNavController(), modifier
             LazyColumn {
                 items(citas) { cita ->
                     CitaItem(cita)
+Row {
+
+
+    Button(
+        onClick = { citaDelete(cita.id.value) },
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth(0.4f)
+    ) {
+        Text("Eliminar")
+    }
+    val mostrarCitas: () -> Unit = {
+        // (context as? ComponentActivity)?.finish()
+        idc.value=cita.id.value
+        val intent = Intent(context, MostrarCitaActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    Button(
+        onClick = mostrarCitas,
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+        modifier = Modifier    .weight(1f)
+            .fillMaxWidth(0.4f)
+    ) {
+        Text("Actualizar")
+    }
+}
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -140,4 +174,36 @@ fun CitaItem(cita: Cita) {
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+fun citaDelete(id:String){
+    val db = Firebase.firestore
+    db.collection("citas").document(id)
+        .delete()
+        .addOnSuccessListener {
+            Log.d("Firestore", "DocumentSnapshot successfully deleted!")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error deleting document", e)
+        }
+
+
+}
+
+fun citaUpdate(id: String){
+    val db = Firebase.firestore
+    val updates = hashMapOf(
+        "middle" to "Byron"
+    )
+
+    db.collection("pacientes").document(id)
+        .set(updates, SetOptions.merge())
+        .addOnSuccessListener {
+            Log.d("Firestore", "DocumentSnapshot successfully updated!")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error updating document", e)
+        }
+
+
 }

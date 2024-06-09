@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 data class Paciente(
+    var id: MutableState<String> =  mutableStateOf("") ,
     var nombre:  MutableState<String> =  mutableStateOf("") ,
     var edad:  MutableState<String> =  mutableStateOf("") ,
     var sexo:  MutableState<String> =  mutableStateOf("") ,

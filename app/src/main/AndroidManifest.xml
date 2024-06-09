@@ -34,6 +34,17 @@
             android:exported="false"
             android:label="PacientesMostrar"
             android:theme="@style/Theme.CitasPedia"/>
+        <activity
+            android:name=".MostrarPacienteActivity"
+            android:exported="false"
+            android:label="PacientesMostrar"
+            android:theme="@style/Theme.CitasPedia"/>
+        <activity
+            android:name=".MostrarCitaActivity"
+            android:exported="false"
+            android:label="PacientesMostrar"
+            android:theme="@style/Theme.CitasPedia"/>
+
 
     </application>
 
