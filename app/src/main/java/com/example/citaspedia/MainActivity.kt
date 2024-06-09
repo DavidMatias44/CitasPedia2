@@ -22,17 +22,24 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.citaspedia.ui.Citaspedia
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.ui.res.painterResource
+import com.example.citaspedia.data.Cita
 import com.example.citaspedia.ui.Pantalla_ini
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import kotlinx.coroutines.tasks.await
 
 class MainActivity : ComponentActivity() {
     private val dataBase = FirebaseFirestore.getInstance()
@@ -41,12 +48,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             CitasPediaTheme {
                 // A surface container using the 'background' color from the theme
-               /* Surface(
+                /* Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {*/
-                   //Citaspedia()
-                   CitasApp()
+                //Citaspedia()
+                CitasApp() // Pasa la función a la composición raíz
+
                 //Pantalla_ini()
                 //}
             }
@@ -56,5 +64,4 @@ class MainActivity : ComponentActivity() {
         }*/
     }
 }
-
 

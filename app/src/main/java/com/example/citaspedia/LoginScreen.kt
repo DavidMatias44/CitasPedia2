@@ -63,17 +63,9 @@ import com.example.citaspedia.ui.Citas
 import com.example.citaspedia.ui.Expedientes
 import com.example.citaspedia.ui.InterfazList
 import com.example.citaspedia.ui.PacienteRepo
-import com.example.citaspedia.ui.PacientesItem
-import com.example.citaspedia.ui.PacientesList
 //import com.example.citaspedia.ui.pacienteRead
 import com.google.firebase.firestore.ktx.firestore
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.SemanticsProperties.Text
-import androidx.compose.ui.text.input.KeyboardType.Companion.Text
-import com.example.citaspedia.ui.mostrar
 
 
 enum class CitasScreen(@StringRes val title: Int) {
@@ -90,7 +82,8 @@ enum class CitasScreen(@StringRes val title: Int) {
 
 @Composable
 
-fun CitasApp(navController: NavHostController = rememberNavController(),
+fun CitasApp(
+             navController: NavHostController = rememberNavController(),
              viewModel: GameViewModel = viewModel()){
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = CitasScreen.valueOf(
@@ -157,7 +150,7 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
                     // quantityOptions = DataSource.quantityOptions,
                     MostrarButtonClicked = {
 
-                        navController.navigate(CitasScreen.Mostrar.name)
+                        //navController.navigate(CitasScreen.Mostrar.name)
                     },
                     CancelarButtonClicked = {
                         navController.navigate(CitasScreen.Principal.name)
@@ -220,8 +213,9 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
 
                 Citas(
                     MostrarButtonClicked = {
-
-                        navController.navigate(CitasScreen.Mostrarcita.name)
+                       // val intent = Intent(LocalContext.current, CitasActivity::class.java)
+                        //LocalContext.current.startActivity(intent)
+                        //navController.navigate(CitasScreen.Mostrarcita.name)
                     },
                     //obtenPaciente()
                     // quantityOptions = DataSource.quantityOptions,
@@ -236,23 +230,7 @@ fun CitasApp(navController: NavHostController = rememberNavController(),
 
             }
             composable(route = CitasScreen.Mostrarcita.name) {
-
-
-                mostrar(
-
-                    //pacientes = ()
-                    // quantityOptions = DataSource.quantityOptions,
-                    /*UpdateButtonClicked = {
-                         //viewModel.setQuantity(it)
-                         // navController.navigate(CupcakeScreen.Flavor.name)
-                     },
-                    DeleteButtonClicked = {
-
-                    },
-                     modifier = Modifier
-                         //.fillMaxSize()
-                         //.padding(dimensionResource(R.dimen.padding_medium))*/
-                )
+              CitasActivity()
             }
         }
     }
@@ -272,16 +250,15 @@ fun obtenPaciente() {
                 val pacien = Paciente()
                 val resulData = document.data
 
-                pacien.nombre.value = document.getString("Nombre").toString()
+                pacien.nombre = mutableStateOf(document.getString("Nombre").orEmpty())
 
-                pacien.edad.value =
-                    document.getString("Edad").toString() // Convertir a Int si es necesario
+                pacien.edad=  mutableStateOf(document.getString("Edad").toString()) // Convertir a Int si es necesario
 
-                pacien.sexo.value = document.getString("Sexo").toString()
+                pacien.sexo = mutableStateOf(document.getString("Sexo").toString())
 
-                pacien.responsable.value = document.getString("Responsable").toString()
+                pacien.responsable = mutableStateOf(document.getString("Responsable").toString())
 
-                pacien.num_telefonico.value = document.getString("Numero").toString()
+                pacien.num_telefonico = mutableStateOf(document.getString("Numero").toString())
 
 
                 PacienteRepo.pacientes.add(pacien)
@@ -290,11 +267,7 @@ fun obtenPaciente() {
 
 
               //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
-            for(paciente in PacienteRepo.pacientes){
-Log.w("Listaderepo", paciente.nombre.value)//}
-            //} else {
-             //   println("No se encontró el documento")
-           }
+
            /* object Repositorio{
                val pacientes= listaPersonas
             }*/

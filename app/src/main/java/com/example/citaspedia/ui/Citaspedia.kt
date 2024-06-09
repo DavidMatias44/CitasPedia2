@@ -1,5 +1,6 @@
 package com.example.citaspedia.ui
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,11 +47,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.citaspedia.CitasScreen
+import com.example.citaspedia.PacienteActivity
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
@@ -68,6 +70,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
     val paciente = remember { Paciente() }
     var isLoading by remember { mutableStateOf(true) }
     var idPaciente by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -309,9 +312,13 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 ) {
                     Text("Registrar")
                 }
+                val mostrarCitas: () -> Unit = {
+                    val intent = Intent(context, PacienteActivity::class.java)
+                    context.startActivity(intent)
+                }
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = MostrarButtonClicked ,
+                    onClick = mostrarCitas ,
                     shape = RectangleShape,
                     enabled = isLoading,
                     colors = ButtonDefaults.buttonColors(
