@@ -52,7 +52,6 @@ class PacienteActivity : ComponentActivity() {
     }
 }
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun mostrarP(navController: NavHostController = rememberNavController(), modifier: Modifier = Modifier) {
