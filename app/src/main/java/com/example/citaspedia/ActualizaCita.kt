@@ -1,27 +1,26 @@
-package com.example.citaspedia.ui
+package com.example.citaspedia
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,27 +43,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.citaspedia.CitasActivity
-import com.example.citaspedia.R
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.citaspedia.data.Cita
+import com.example.citaspedia.data.Paciente
+import com.example.citaspedia.ui.GameViewModel
+import com.example.citaspedia.ui.citaInsert
+import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.background_form
 import com.example.citaspedia.ui.theme.denied_button
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
-import com.google.firebase.database.*
-import kotlinx.coroutines.tasks.await
 
+class MostrarCitaActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            CitasPediaTheme {
+                actualizarcita()
+            }
+        }
+    }
+}
 @Composable
-fun Citas(gameViewModel: GameViewModel =   viewModel(),
+fun actualizarcita(navController: NavHostController = rememberNavController(), gameViewModel: GameViewModel =   viewModel(),
     // onNextButtonClicked: (Int) -> Unit,
-          modifier: Modifier = Modifier,
-          CancelarButtonClicked: () -> Unit = {},
-          MostrarButtonClicked:  @Composable () -> Unit = {},
-) {
+                   modifier: Modifier = Modifier) {
     //val banderanumeros: Boolean=false
     val context = LocalContext.current
     val gameuiState by gameViewModel.uiState.collectAsState()
@@ -76,21 +85,23 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
     val day = calendar.get(Calendar.DAY_OF_MONTH)
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
+    val backStackEntry by navController.currentBackStackEntryAsState()
 
 
+    val currentScreen = CitasScreen.valueOf(
+        backStackEntry?.destination?.route ?: CitasScreen.Start.name
+    )
+    textocita(idc.value,cita)
     Scaffold(
         topBar = {
-            //CitaspediaTopAppBar()
-            Text(
-                text = stringResource(id = R.string.citas),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                //.padding(start = 56.dp)
-
+            CitaspediaTopAppBar(
+                currentScreen = currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
             )
+
         }
+
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,7 +135,6 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 shape = RoundedCornerShape(10.dp),
                 readOnly = true,
 
-
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -134,7 +144,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 trailingIcon = {
                     IconButton(onClick = {
                         DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
-                           cita.fecha.value= "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                            cita.fecha.value= "$selectedDay/${selectedMonth + 1}/$selectedYear"
                         }, year, month, day).show()
                     }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Date")
@@ -151,8 +161,10 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
             )
             Spacer(modifier = Modifier.padding(16.dp))
             OutlinedTextField(
-                value =cita.hora.value,
-                onValueChange = {        },
+                value =cita.hora.value
+                ,
+                onValueChange = {
+                },
                 label = { Text("Hora") },
                 modifier = Modifier
                     .height(75.dp),
@@ -167,7 +179,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 trailingIcon = {
                     IconButton(onClick = {
                         TimePickerDialog(context, { _, selectedHour, selectedMinute ->
-                           cita.hora.value= "$selectedHour:$selectedMinute"
+                            cita.hora.value= "$selectedHour:$selectedMinute"
                         }, hour, minute, true).show()
                     }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Time")
@@ -177,8 +189,6 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
 
             Spacer(modifier = Modifier.padding(16.dp))
-
-
             Text(
                 text = stringResource(id = R.string.nombre_paciente),
                 textAlign = TextAlign.Start,
@@ -208,7 +218,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
             ) {
                 Button(
-                    onClick =  CancelarButtonClicked,
+                    onClick =  { (context as? ComponentActivity)?.finish() },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = denied_button
@@ -219,13 +229,13 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = { mostrarb=true
-                        citaInsert(cita) },
+                        citaUpdate(idc.value,cita,context) },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
                     )
                 ) {
-                    Text("Registrar")
+                    Text("Confirmar")
                 }
                 val mostrarCitas: () -> Unit = {
                     val intent = Intent(context, CitasActivity::class.java)
@@ -250,139 +260,45 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
 }
 
-fun citaInsert(cita: Cita) {
-    //Log.d(TAG, paciente.nombre.toString())
-    // Create a new user with a first and last name
+@Composable
+fun textocita(id: String,cita:Cita){
+    val db = Firebase.firestore
+    LaunchedEffect(Unit) {
+        val docRef = db.collection("citas").document(id)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    cita.nombre_paciente.value = document.getString("Nombre").orEmpty()
+                    cita.fecha.value = document.getString("Fecha").orEmpty()
+                    cita.hora.value = document.getString("Hora").orEmpty()
+                } else {
+                    //data = listOf("No such document")
+                }
+            }
+            .addOnFailureListener {
+                //data = "Error getting documents: ${exception.message}"
+            }
+    }
+}
 
+fun citaUpdate(id: String,cita: Cita, context: Context){
     val db = Firebase.firestore
 
-
-
-    val unacita = hashMapOf(
+    val updates = hashMapOf(
+        "Nombre" to cita.nombre_paciente.value,
         "Fecha" to cita.fecha.value,
         "Hora" to cita.hora.value,
-        "Nombre" to cita.nombre_paciente.value,
 
     )
+    db.collection("citas").document(id)
+        .set(updates, SetOptions.merge())
+        .addOnSuccessListener {
+            val texto = "Se actualizo correctamente"
+            Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
 
-// Add a new document with a generated ID
-    var id:String=""
-    db.collection("citas")
-        .add(unacita)
-        .addOnSuccessListener { documentReference ->
-            // Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            id=documentReference.id
-
+            Log.d("Firestore", "DocumentSnapshot successfully updated!")
         }
         .addOnFailureListener { e ->
-            Log.w(TAG, "Error adding document", e)
+            Log.w("Firestore", "Error updating document", e)
         }
-
-    // Log.d(TAG,"sss ${id.id}")
-
-}
-
-
-
-/*fun mostrar(modifier: Modifier = Modifier) {
-
-
-    /* Important: It is not a good practice to access data source directly from the UI.
-        In later units you will learn how to use ViewModel in such scenarios that takes the
-        data source as a dependency and exposes heroes.
-         */
-
-    var citas by remember { mutableStateOf(listOf<Cita>()) }
-
-    val db = Firebase.firestore
-    var idColeccion:String=""
-
-    val viajesRef = db.collection("viajes")
-    //val listaPersonas = PacienteRepo.pacientes
-    LaunchedEffect(Unit) {
-        db.collection("citas")//.document("meq4CKpLUagt7z9aHFbO")
-            .get()
-            .addOnSuccessListener { result ->
-                val citaList = mutableListOf<Cita>()
-                for (document in result) {
-                    val cita = Cita()
-                    //idColeccion = document.id
-                    cita.fecha = document.getString("Fecha").toString()
-                    cita.hora = document.getString("Hora").toString()
-                    cita.nombre_paciente = document.getString("Nombre").toString()
-
-
-                    citaList.add(cita)
-
-                }
-                citas = citaList
-
-                //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
-                //for(paciente in listaPersonas){
-               /* for (cita in CitasRepo.citas) {
-                    Log.w("Listadecita", cita.fecha)//}
-                    Log.w("Listadecita", cita.hora)
-                    Log.w("Listadecita", cita.nombre_paciente)
-                    //} else {
-                    //   println("No se encontró el documento")
-                }*/
-
-                //} else {
-                //   println("No se encontró el documento")
-                //   }
-            }
-            .addOnFailureListener { exception ->
-                println("Error al obtener el documento: $exception")
-            }
-
-    }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        Text(text = "Citas", style = MaterialTheme.typography.headlineSmall)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn {
-            items(citas) { cita ->
-                CitaItem(cita)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-    }
-
-
-}
-
-@Composable
-fun CitaItem(cita: Cita) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-           // Text(text = "ID: ${viaje.id}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Nombre: ${cita.nombre_paciente}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Fecha: ${cita.fecha}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Hora: ${cita.hora}", style = MaterialTheme.typography.bodyLarge)
-            //Text(text = "Asientos disponibles: ${viaje.asientosDisponibles}", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-           // Button(onClick = {TomarViaje(viaje.id, viaje.asientosDisponibles )  }) {
-            //    Text(text = "Tomar viaje")
-            //}
-        }
-    }
-}
-*/
-@Composable
-fun muestracita(listacitas: MutableList<Cita>, idColeccion:String) {
-    for (cita in listacitas) {
-
-        Text(text = "\n${cita.fecha}\n${cita.hora}\n${cita.nombre_paciente}\n")
-        Spacer(modifier = Modifier.padding(16.dp))
-
-    }
 }
