@@ -44,8 +44,16 @@
             android:exported="false"
             android:label="PacientesMostrar"
             android:theme="@style/Theme.CitasPedia"/>
-
-
+        <activity
+            android:name=".ui.MostrarExpedientesActivity"
+            android:exported="false"
+            android:label="PacientesMostrar"
+            android:theme="@style/Theme.CitasPedia"/>
+        <activity
+            android:name=".ui.ActualizaExpedienteActivity"
+            android:exported="false"
+            android:label="PacientesMostrar"
+            android:theme="@style/Theme.CitasPedia"/>
     </application>
 
 </manifest>

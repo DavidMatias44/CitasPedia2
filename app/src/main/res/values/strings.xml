@@ -21,6 +21,7 @@
     <string name="responsable">Responsable:</string>
     <string name="num_responsable">Número telefonico:</string>
 
+    <string name="paciente_nombre">Nombre del paciente:</string>
     <string name="motivo_consulta">Motivo de la consulta:</string>
     <string name="exploracion_fi">Exploración física:</string>
     <string name="diagnostico">Diagnóstico:</string>

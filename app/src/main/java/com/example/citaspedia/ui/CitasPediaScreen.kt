@@ -38,6 +38,7 @@ enum class CitasPediaScreen(
     Principal(title = R.string.principal),
     Citas(title = R.string.citas),
     Expedientes(title = R.string.expedientes),
+    MostrarExpedientes(title = R.string.expedientes),
     Recetas(title = R.string.recetas),
     Pacientes(title = R.string.pacientes),
     Mostrar(title = R.string.pacientes)
