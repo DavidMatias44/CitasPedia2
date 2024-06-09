@@ -1,7 +1,6 @@
 package com.example.citaspedia.ui
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,34 +8,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.citaspedia.R
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.ZonedDateTime
-import java.time.ZoneId
 import java.time.LocalDate
 import java.time.LocalTime
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
-                 ExpedienteButtonClicked: () -> Unit = {},
-                 RecetaButtonClicked: () -> Unit = {},
-                 CitaButtonClicked: () -> Unit = {},
-                 modifier: Modifier = Modifier) {
+fun Pantalla_ini(
+    PacienteButtonClicked: () -> Unit = {},
+    ExpedienteButtonClicked: () -> Unit = {},
+    RecetaButtonClicked: () -> Unit = {},
+    CitaButtonClicked: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     val currentDate = LocalDate.now()
 
     // Obtener la hora actual
@@ -52,18 +47,14 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
 
     Scaffold(
         topBar = {
-            //CitaspediaTopAppBar()
             Text(
-                text = stringResource(id = R.string.pantalla_principal),
+                text = stringResource(id = R.string.principal),
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                   // .padding(start = 56.dp)
-
             )
         }
-
     ) {
         Spacer(modifier = Modifier.height(45.dp))
         Column(
@@ -77,7 +68,6 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
             Text("$formattedDate $formattedTime")
 
             Spacer(modifier = Modifier.height(16.dp))
-            //val imageView = findViewById<ImageView>(R.id.imageView)
             Button(
                 onClick = PacienteButtonClicked,
                 modifier = Modifier.fillMaxWidth(),
@@ -85,8 +75,8 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
             ) {
                 Text("Registrar un paciente")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            //val imageView = findViewById<ImageView>(R.id.imageView)
             Button(
                 onClick = CitaButtonClicked,
                 modifier = Modifier.fillMaxWidth(),
@@ -94,8 +84,8 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
             ) {
                 Text("Registrar una cita")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            //val imageView = findViewById<ImageView>(R.id.imageView)
             Button(
                 onClick = ExpedienteButtonClicked,
                 modifier = Modifier.fillMaxWidth(),
@@ -103,8 +93,8 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
             ) {
                 Text("Elaborar un expediente ")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            //val imageView = findViewById<ImageView>(R.id.imageView)
             Button(
                 onClick = RecetaButtonClicked,
                 modifier = Modifier.fillMaxWidth(),
@@ -113,7 +103,6 @@ fun Pantalla_ini(PacienteButtonClicked: () -> Unit = {},
                 Text("Realizar una receta")
             }
         }
-
     }
 }
 

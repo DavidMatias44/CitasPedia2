@@ -50,7 +50,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.citaspedia.CitasScreen
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore

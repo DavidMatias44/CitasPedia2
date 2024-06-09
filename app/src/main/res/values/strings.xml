@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CitasPedia</string>
+    <string name="login">Login</string>
+    <string name="principal">Bienvenido</string>
     <string name="nombre">Nombre completo:</string>
     <string name="edad">Edad :</string>
     <string name="sexo">Sexo:</string>
@@ -16,7 +18,6 @@
     <string name="expedientes">Expedientes</string>
     <string name="recetas">Recetas</string>
     <string name="pacientes">Pacientes</string>
-    <string name="pantalla_principal">Bienvenido</string>
     <string name="responsable">Responsable:</string>
     <string name="num_responsable">Número telefonico:</string>
 
