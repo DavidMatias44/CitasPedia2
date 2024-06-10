@@ -3,13 +3,13 @@ package com.example.citaspedia.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.widget.Button
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,7 +64,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Pantalla_ini(
@@ -113,10 +113,11 @@ fun Pantalla_ini(
         val intent = Intent(context, MostrarExpedientesActivity::class.java)
         context.startActivity(intent)
     }
-    val items = listOf("Registrar un paciente" to  PacienteButtonClicked, "Ver todos los pacientes" to mostrarPacientes, "Registrar una cita" to CitaButtonClicked, "Ver agenda de citas" to mostrarCitas, "Elaborar un expediente" to ExpedienteButtonClicked, "Ver todos los expedientes" to mostrarExpedientes, "Realizar una receta" to {}  )
+    val items = listOf("Registrar un paciente" to  PacienteButtonClicked,
+        "Ver todos los pacientes" to mostrarPacientes, "Registrar una cita" to CitaButtonClicked,
+        "Ver agenda de citas" to mostrarCitas, "Elaborar un expediente" to ExpedienteButtonClicked,
+        "Ver todos los expedientes" to mostrarExpedientes, "Realizar una receta" to {}  )
     var selectedItem by remember { mutableStateOf("") }
-
-
 
     LaunchedEffect(Unit) {
         try {
@@ -150,14 +151,12 @@ fun Pantalla_ini(
         Box(modifier = Modifier.fillMaxSize()
 
             ) {
-
             Button(
                 onClick = { expanded = true },
                 modifier = Modifier.align(Alignment.TopStart)
             ) {
                 Text("Menú")
             }
-
             DropdownMenu(
                 expanded = expanded,
                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -165,18 +164,16 @@ fun Pantalla_ini(
             ) {
 
                 items.forEach { (item, action) ->
-
                     Button(
                         onClick = {
                             action()
                             selectedItem = item
                             expanded = false
                         },
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(0.8f).align(Alignment.CenterHorizontally)
                     ) {
                         Text(text = item, fontSize = 16.sp)
                     }
-
                     Spacer(modifier = Modifier.height(40.dp))
 
                 }
@@ -207,6 +204,10 @@ fun Pantalla_ini(
                 onClick = {
                     isNombreFound = pacientesList.any {
                         it.nombre.value == inputNombre
+
+                    }
+                    if(!isNombreFound){
+                        Toast.makeText(context, "No hay un paciente con nombre ${inputNombre}", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -224,6 +225,7 @@ fun Pantalla_ini(
                 PacienteItem(paciente)
             } else {
                 println(paciente)
+
             }
             Spacer(modifier = Modifier.height(45.dp))
 

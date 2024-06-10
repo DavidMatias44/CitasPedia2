@@ -1,9 +1,11 @@
 package com.example.citaspedia
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -139,7 +141,7 @@ Row {
 
 
     Button(
-        onClick = { citaDelete(cita.id.value) },
+        onClick = { citaDelete(cita.id.value,context) },
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
         modifier = Modifier
             .weight(1f)
@@ -227,15 +229,19 @@ fun CitaItem(cita: Cita) {
     }
 }
 
-fun citaDelete(id:String){
+fun citaDelete(id:String,context: Context){
     val db = Firebase.firestore
     db.collection("citas").document(id)
         .delete()
         .addOnSuccessListener {
             Log.d("Firestore", "DocumentSnapshot successfully deleted!")
+            Toast.makeText(context, "Se ha eliminado correctamente", Toast.LENGTH_SHORT).show()
+
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error deleting document", e)
+            Toast.makeText(context, "Fallo al eliminar", Toast.LENGTH_SHORT).show()
+
         }
 
 

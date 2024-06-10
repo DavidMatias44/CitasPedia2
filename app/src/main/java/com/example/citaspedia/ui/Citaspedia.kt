@@ -1,8 +1,10 @@
 package com.example.citaspedia.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -276,6 +278,8 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 onValueChange = { newValue ->
                     if (!contieneLetras(newValue)) {
                         paciente.num_telefonico.value = newValue
+
+
                     } else {
                         gameViewModel.banderaletras = true
                         gameViewModel.help_num_telefonico()
@@ -313,7 +317,7 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = { isLoading=true
-                        pacienteInsert(paciente,checkedState,checkedState2)
+                        pacienteInsert(paciente,checkedState,checkedState2,context)
                     },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
@@ -358,17 +362,19 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
 
 const val TAG = "INSERT"
 
+
 fun pacienteInsert(
-    paciente: Paciente, checkedState:Boolean, checkedState2:Boolean
+    paciente: Paciente, checkedState:Boolean, checkedState2:Boolean, context: Context
 ) {
+
     //Log.d(TAG, paciente.nombre.toString())
     // Create a new user with a first and last name
     val db = Firebase.firestore
 
-    if(checkedState){
-        paciente.sexo.value="Hombre"
-    }else if (checkedState2){
-        paciente.sexo.value="Mujer"
+    if (checkedState) {
+        paciente.sexo.value = "Hombre"
+    } else if (checkedState2) {
+        paciente.sexo.value = "Mujer"
     }
     val unpaciente = hashMapOf(
         "Nombre" to paciente.nombre.value,
@@ -377,20 +383,27 @@ fun pacienteInsert(
         "Responsable" to paciente.responsable.value,
         "Numero" to paciente.num_telefonico.value
     )
-
+    if (paciente.num_telefonico.value.length == 10){
 // Add a new document with a generated I
-    db.collection("pacientes")
-        .add(unpaciente)
-        .addOnSuccessListener { documentReference ->
-             Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-          // paciente.id= mutableStateOf( documentReference.id)
-        }
+        db.collection("pacientes")
+            .add(unpaciente)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                Toast.makeText(context, "Se registro correctamente", Toast.LENGTH_SHORT).show()
 
-        .addOnFailureListener { e ->
-            Log.w(TAG, "Error adding document", e)
-        }
+            }
+
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+                Toast.makeText(context, "Fallo al registrar", Toast.LENGTH_SHORT).show()
+
+            }
 
     // Log.d(TAG,"sss ${id.id}")
+}else{
+        Toast.makeText(context, "El número telefónico debe ser de 10 dígitos", Toast.LENGTH_SHORT).show()
+        //gameuiState.error_num_telefono
+    }
 
 }
 

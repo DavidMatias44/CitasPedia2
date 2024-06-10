@@ -4,12 +4,14 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -162,10 +164,12 @@ fun CitasPediaTopAppBar(
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
+
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Image(
                     painter = painterResource(id = R.drawable.logo_citaspedia),
                     contentDescription = null,

@@ -2,8 +2,10 @@ package com.example.citaspedia.ui
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -296,7 +298,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = { mostrarb=true
-                        citaInsert(cita) },
+                        citaInsert(cita,context) },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
@@ -329,14 +331,8 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
 
 
 
-fun citaInsert(cita: Cita) {
-    //Log.d(TAG, paciente.nombre.toString())
-    // Create a new user with a first and last name
-
+fun citaInsert(cita: Cita,context: Context) {
     val db = Firebase.firestore
-
-
-
     val unacita = hashMapOf(
         "Fecha" to cita.fecha.value,
         "Hora" to cita.hora.value,
@@ -348,15 +344,16 @@ fun citaInsert(cita: Cita) {
     var id:String=""
     db.collection("citas")
         .add(unacita)
-        .addOnSuccessListener { documentReference ->
+        .addOnSuccessListener {
             // Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            id=documentReference.id
+           // id=documentReference.id
+            Toast.makeText(context, "Se registro correctamente", Toast.LENGTH_SHORT).show()
 
         }
         .addOnFailureListener { e ->
             Log.w(TAG, "Error adding document", e)
-        }
+            Toast.makeText(context, "Fallo al registrar", Toast.LENGTH_SHORT).show()
 
-    // Log.d(TAG,"sss ${id.id}")
+        }
 
 }
