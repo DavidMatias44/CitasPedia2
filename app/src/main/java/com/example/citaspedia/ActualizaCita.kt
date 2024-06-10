@@ -53,7 +53,6 @@ import com.example.citaspedia.ui.CitasPediaScreen
 import com.example.citaspedia.ui.CitasPediaTopAppBar
 import com.example.citaspedia.ui.CitaspediaTopAppBar
 import com.example.citaspedia.ui.GameViewModel
-import com.example.citaspedia.ui.citaInsert
 import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.background_form
@@ -295,12 +294,13 @@ fun citaUpdate(id: String,cita: Cita, context: Context){
     db.collection("citas").document(id)
         .set(updates, SetOptions.merge())
         .addOnSuccessListener {
-            val texto = "Se actualizo correctamente"
-            Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"Se actualizo correctamente", Toast.LENGTH_SHORT).show()
 
             Log.d("Firestore", "DocumentSnapshot successfully updated!")
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error updating document", e)
+            Toast.makeText(context, "Fallo al actualizar", Toast.LENGTH_SHORT).show()
+
         }
 }

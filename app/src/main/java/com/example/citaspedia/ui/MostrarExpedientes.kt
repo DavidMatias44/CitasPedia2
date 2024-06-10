@@ -1,9 +1,11 @@
 package com.example.citaspedia.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -126,7 +128,7 @@ fun MostrarExpedientes(
                     Spacer(modifier = Modifier.height(8.dp))
                     Row{
                         Button(
-                            onClick = { expedienteDelete(expediente.id.value) },
+                            onClick = { expedienteDelete(expediente.id.value,context) },
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .weight(1f)
@@ -186,15 +188,19 @@ fun ExpedienteItem(expediente: Expediente) {
 }
 
 
-fun expedienteDelete(id:String){
+fun expedienteDelete(id:String,context: Context){
     val db = Firebase.firestore
     db.collection("expedientes").document(id)
         .delete()
         .addOnSuccessListener {
             Log.d("Firestore", "DocumentSnapshot successfully deleted!")
+            Toast.makeText(context, "Se ha eliminado correctamente", Toast.LENGTH_SHORT).show()
+
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error deleting document", e)
+            Toast.makeText(context, "Fallo al eliminar", Toast.LENGTH_SHORT).show()
+
         }
 
 

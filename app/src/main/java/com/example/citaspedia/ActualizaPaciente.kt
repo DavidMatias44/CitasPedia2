@@ -177,8 +177,8 @@ fun actualizar(gameViewModel: GameViewModel =   viewModel(),
                     .fillMaxWidth()
                     .padding(start = 56.dp)
             )
-            var H: Boolean= false
-            var M: Boolean= false
+            var H= false
+            var M= false
             if(paciente.sexo.value=="Hombre"){
                  H= true
             }else if(paciente.sexo.value=="Mujer"){
@@ -397,12 +397,13 @@ fun pacienteUpdate(id: String,paciente: Paciente, checkedState:Boolean, checkedS
     db.collection("pacientes").document(id)
         .set(updates, SetOptions.merge())
         .addOnSuccessListener {
-            val texto = "Se actualizo correctamente"
-            Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Se actualizo correctamente", Toast.LENGTH_SHORT).show()
 
             Log.d("Firestore", "DocumentSnapshot successfully updated!")
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error updating document", e)
+            Toast.makeText(context, "Fallo al actualizar", Toast.LENGTH_SHORT).show()
+
         }
 }

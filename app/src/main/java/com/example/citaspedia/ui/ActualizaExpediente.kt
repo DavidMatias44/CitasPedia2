@@ -403,12 +403,13 @@ fun expedienteUpdate(
     db.collection("expedientes").document(id)
         .set(updates, SetOptions.merge())
         .addOnSuccessListener {
-            val texto = "Se actualizo correctamente"
-            Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Se actualizo correctamente", Toast.LENGTH_SHORT).show()
 
             Log.d("Firestore", "DocumentSnapshot successfully updated!")
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error updating document", e)
+            Toast.makeText(context, "Fallo al actualizar", Toast.LENGTH_SHORT).show()
+
         }
 }
