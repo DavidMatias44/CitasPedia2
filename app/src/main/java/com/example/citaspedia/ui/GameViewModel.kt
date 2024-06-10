@@ -53,6 +53,29 @@ class GameViewModel: ViewModel() {
             //  banderanumeros=false
         }
     }
+
+    fun help_num_telefonico(){
+        if(banderaletras) {
+            _uiState.update { currentState ->
+                currentState.copy(hayerrorlet = true)
+            }
+            _uiState.update { currentState ->
+                currentState.copy(error_num_telefono = true)
+            }
+            //  banderanumeros=false
+        }
+    }
+    fun help_responsable(){
+        if(banderanumeros) {
+            _uiState.update { currentState ->
+                currentState.copy(hayerrornum = true)
+            }
+            _uiState.update { currentState ->
+                currentState.copy(error_responsable = true)
+            }
+            //  banderanumeros=false
+        }
+    }
     fun errorletras(){
         banderaletras=false
         _uiState.update { currentState ->

@@ -61,7 +61,7 @@ fun InterfazList(modifier: Modifier = Modifier) {
    val listapacientes =
        PacienteRepo.pacientes
 
-    PacientesList(pacientes = listapacientes)
+
     /* for(pacient in PacienteRepo.pacientes) {
         PacientesItem(paciente = pacient,
             modifier = Modifier

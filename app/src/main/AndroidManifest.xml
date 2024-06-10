@@ -54,6 +54,7 @@
             android:exported="false"
             android:label="PacientesMostrar"
             android:theme="@style/Theme.CitasPedia"/>
+
     </application>
 
 </manifest>

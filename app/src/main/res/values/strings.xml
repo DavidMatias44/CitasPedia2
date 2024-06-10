@@ -11,8 +11,8 @@
     <string name="peso">Peso:</string>
     <string name="temperatura">Temperatura:</string>
     <string name="talla">Talla:</string>
-    <string name="error1">El nombre no debe llevar números:</string>
-    <string name="error2">El nombre no debe llevar letras:</string>
+    <string name="error1">No se admiten números:</string>
+    <string name="error2">No se admiten letras:</string>
     <string name="exit">Cerrar</string>
     <string name="citas">Citas</string>
     <string name="expedientes">Expedientes</string>

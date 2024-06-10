@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -114,7 +115,12 @@ fun MostrarExpedientes(
             Text(text = "Citas", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn {
+            LazyColumn (
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp) // Ajusta la altura máxima según tus necesidades
+            ) {
                 items(expedientes) { expediente ->
                     ExpedienteItem(expediente)
                     Spacer(modifier = Modifier.height(8.dp))
