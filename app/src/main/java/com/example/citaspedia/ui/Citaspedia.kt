@@ -1,5 +1,6 @@
 package com.example.citaspedia.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -45,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -52,13 +54,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+
 import com.example.citaspedia.PacienteActivity
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.SetOptions
+import com.example.citaspedia.idd
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
+
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                navController: NavHostController = rememberNavController(),
@@ -68,10 +72,9 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
     //val banderanumeros: Boolean=false
     val gameuiState by gameViewModel.uiState.collectAsState()
     val paciente = remember { Paciente() }
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(false) }
     var idPaciente by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     Scaffold(
         topBar = {
             //CitaspediaTopAppBar()
@@ -243,8 +246,10 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
             Spacer(modifier = Modifier.padding(16.dp))
             OutlinedTextField(
                 value = paciente.responsable.value,
-                onValueChange = { newValue ->
-                    paciente.responsable.value = newValue
+                onValueChange ={ newValue ->
+                    if(!contieneNumeros(newValue)){ paciente.responsable.value = newValue}else{ gameViewModel.banderanumeros=true
+                        gameViewModel.help_responsable()
+                    }
                 },
                 modifier = Modifier
                     .height(45.dp),
@@ -269,7 +274,12 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
             OutlinedTextField(
                 value = paciente.num_telefonico.value,
                 onValueChange = { newValue ->
-                    paciente.num_telefonico.value = newValue
+                    if (!contieneLetras(newValue)) {
+                        paciente.num_telefonico.value = newValue
+                    } else {
+                        gameViewModel.banderaletras = true
+                        gameViewModel.help_num_telefonico()
+                    }
                 },
                 modifier = Modifier
                     .height(45.dp),
@@ -312,13 +322,13 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
                 ) {
                     Text("Registrar")
                 }
-                val mostrarPacientes: () -> Unit = {
+                val mostrarunPaciente: () -> Unit = {
                     val intent = Intent(context, PacienteActivity::class.java)
                     context.startActivity(intent)
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = mostrarPacientes ,
+                    onClick = mostrarunPaciente ,
                     shape = RectangleShape,
                     enabled = isLoading,
                     colors = ButtonDefaults.buttonColors(
@@ -348,7 +358,9 @@ fun Citaspedia(gameViewModel: GameViewModel =   viewModel(),
 
 const val TAG = "INSERT"
 
-fun pacienteInsert(paciente: Paciente, checkedState:Boolean, checkedState2:Boolean) {
+fun pacienteInsert(
+    paciente: Paciente, checkedState:Boolean, checkedState2:Boolean
+) {
     //Log.d(TAG, paciente.nombre.toString())
     // Create a new user with a first and last name
     val db = Firebase.firestore
@@ -366,14 +378,14 @@ fun pacienteInsert(paciente: Paciente, checkedState:Boolean, checkedState2:Boole
         "Numero" to paciente.num_telefonico.value
     )
 
-// Add a new document with a generated ID
-    var id:String=""
+// Add a new document with a generated I
     db.collection("pacientes")
         .add(unpaciente)
         .addOnSuccessListener { documentReference ->
-            // Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            id=documentReference.id
+             Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+          // paciente.id= mutableStateOf( documentReference.id)
         }
+
         .addOnFailureListener { e ->
             Log.w(TAG, "Error adding document", e)
         }
@@ -381,57 +393,10 @@ fun pacienteInsert(paciente: Paciente, checkedState:Boolean, checkedState2:Boole
     // Log.d(TAG,"sss ${id.id}")
 
 }
-fun pacienteRead(): DocumentReference {
-    val db = Firebase.firestore
-
-    val docRef = db.collection("pacientes").document("meq4CKpLUagt7z9aHFbO")
-    /* docRef.get()//tipo de dato DocumentReference
-         .addOnSuccessListener { document ->
-             if (document != null) {
-                 Log.d("Firestore", "DocumentSnapshot data: ${document.data}")
-             } else {
-                 Log.d("Firestore", "No such document")
-             }
-         }
-         .addOnFailureListener { e ->
-             Log.w("Firestore", "Error getting document", e)
-         }
-*/
-    return docRef
 
 
-}
-fun pacienteUpdate(){
-    val db = Firebase.firestore
-    val updates = hashMapOf(
-        "middle" to "Byron"
-    )
-
-    db.collection("pacientes").document("meq4CKpLUagt7z9aHFbO")
-        .set(updates, SetOptions.merge())
-        .addOnSuccessListener {
-            Log.d("Firestore", "DocumentSnapshot successfully updated!")
-        }
-        .addOnFailureListener { e ->
-            Log.w("Firestore", "Error updating document", e)
-        }
-
-
-}
 //@SuppressLint("SuspiciousIndentation")
-fun pacienteDelete(){
-    val db = Firebase.firestore
-    db.collection("pacientes").document("meq4CKpLUagt7z9aHFbO")
-        .delete()
-        .addOnSuccessListener {
-            Log.d("Firestore", "DocumentSnapshot successfully deleted!")
-        }
-        .addOnFailureListener { e ->
-            Log.w("Firestore", "Error deleting document", e)
-        }
 
-
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CitaspediaTopAppBar(

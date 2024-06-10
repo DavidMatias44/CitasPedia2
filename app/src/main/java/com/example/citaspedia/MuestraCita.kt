@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,9 +32,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -44,8 +50,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
-
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import androidx.compose.ui.Alignment
 
 class CitasActivity : ComponentActivity() {
     private val dataBase = FirebaseFirestore.getInstance()
@@ -71,6 +81,9 @@ fun mostrar(navController: NavHostController = rememberNavController(), modifier
     val currentScreen = CitasPediaScreen.valueOf(
         backStackEntry?.destination?.route ?: CitasPediaScreen.Login.name
     )
+
+
+
     val context = LocalContext.current
     var citas by remember { mutableStateOf(listOf<Cita>()) }
     val db = Firebase.firestore
@@ -114,7 +127,12 @@ fun mostrar(navController: NavHostController = rememberNavController(), modifier
             Text(text = "Citas", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn {
+            LazyColumn  (
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp) // Ajusta la altura máxima según tus necesidades
+            ){
                 items(citas) { cita ->
                     CitaItem(cita)
 Row {
@@ -164,11 +182,43 @@ Row {
 
 @Composable
 fun CitaItem(cita: Cita) {
+    var currentDateTime by remember { mutableStateOf(LocalDateTime.now()) }
+
+    // LaunchedEffect se activa cada vez que cambia el estado de la pantalla
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentDateTime = LocalDateTime.now()
+            delay(1000) // Espera 1 segundo antes de actualizar de nuevo
+        }
+    }
+
+    // Formatear la fecha
+    val formattedDate =  formatDate(currentDateTime)
+
+    // Formatear la hora
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val formattedTime =  currentDateTime.format(timeFormatter)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            if((formattedDate.substring(3, 5)==cita.fecha.value.substring(3,5))&&(formattedDate.substring(0, 2)==cita.fecha.value.substring(0,2))&&(formattedDate.substring(6, 10)==cita.fecha.value.substring(6,10))){
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                )  {
+                    Text(
+                        text = "Pendiente para hoy",
+
+
+                            fontSize = 24.sp, // Tamaño del texto
+                            color = Color.Red, // Color del texto
+                            modifier = Modifier.align(Alignment.Center)
+
+                    )
+                }
+            }
             Text(text = "Nombre: ${cita.nombre_paciente.value}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Fecha: ${cita.fecha.value}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Hora: ${cita.hora.value}", style = MaterialTheme.typography.bodyLarge)
@@ -190,21 +240,9 @@ fun citaDelete(id:String){
 
 
 }
-
-fun citaUpdate(id: String){
-    val db = Firebase.firestore
-    val updates = hashMapOf(
-        "middle" to "Byron"
-    )
-
-    db.collection("pacientes").document(id)
-        .set(updates, SetOptions.merge())
-        .addOnSuccessListener {
-            Log.d("Firestore", "DocumentSnapshot successfully updated!")
-        }
-        .addOnFailureListener { e ->
-            Log.w("Firestore", "Error updating document", e)
-        }
-
-
+fun formatDate(date: LocalDateTime): String {
+    val dayOfMonth = if (date.dayOfMonth < 10) "0${date.dayOfMonth}" else date.dayOfMonth.toString()
+    val month = if (date.monthValue < 10) "0${date.monthValue}" else date.monthValue.toString()
+    val year = date.year
+    return "$dayOfMonth/$month/$year"
 }

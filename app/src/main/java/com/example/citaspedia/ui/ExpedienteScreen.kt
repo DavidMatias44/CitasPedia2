@@ -20,7 +20,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -47,6 +49,8 @@ fun ExpedienteScreen(
 ) {
     val gameuiState by gameViewModel.uiState.collectAsState()
     val expediente = remember { Expediente() }
+    var mostrarE by remember { mutableStateOf(false) }
+
 
     val context = LocalContext.current
 
@@ -288,7 +292,7 @@ fun ExpedienteScreen(
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 Button(
-                    onClick = {
+                    onClick = {mostrarE=true
                         expediente.create(context = context)
                     },
                     shape = RectangleShape,
@@ -301,10 +305,12 @@ fun ExpedienteScreen(
                 Spacer(modifier = Modifier.padding(8.dp))
                 Button(
                     onClick = {
+
                         val intent = Intent(context, MostrarExpedientesActivity::class.java)
                         context.startActivity(intent)
                     },
                     shape = RectangleShape,
+                    enabled = mostrarE,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
                     )
