@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,7 +94,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("NombreTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -122,7 +123,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("MotivTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -151,7 +152,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("ExplFisTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -180,7 +181,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("DiagTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -209,7 +210,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("TrataTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -238,7 +239,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("ExmLabTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -267,7 +268,7 @@ fun ExpedienteScreen(
                     }
                 },
                 modifier = Modifier
-                    .height(45.dp),
+                    .height(45.dp).testTag("PronoTextField"),
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -286,7 +287,9 @@ fun ExpedienteScreen(
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = denied_button
-                    )
+                    ),
+                    modifier = Modifier
+                        .testTag("CancelarButton")
                 ) {
                     Text("Cancelar")
                 }
@@ -298,7 +301,9 @@ fun ExpedienteScreen(
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
-                    )
+                    ),
+                    modifier = Modifier
+                        .testTag("RegistrarButton")
                 ) {
                     Text("Registrar")
                 }
@@ -313,7 +318,9 @@ fun ExpedienteScreen(
                     enabled = mostrarE,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = approve_button
-                    )
+                    ),
+                    modifier = Modifier
+                        .testTag("MostrarButton")
                 ) {
                     Text("Mostrar")
                 }

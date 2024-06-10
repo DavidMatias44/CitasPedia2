@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -201,7 +202,8 @@ fun Pantalla_ini(
                     inputNombre = it
                     paciente = Paciente()
                     isNombreFound = false
-                }
+                },
+                modifier = Modifier.testTag("Buscarcampo")
             )
             Button(
                 onClick = {
@@ -209,7 +211,9 @@ fun Pantalla_ini(
                         it.nombre.value == inputNombre
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("BuscarButton"),
                 enabled = true
             ) {
                 Text("Buscar paciente")

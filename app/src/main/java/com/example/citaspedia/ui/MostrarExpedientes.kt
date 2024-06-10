@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -129,7 +130,7 @@ fun MostrarExpedientes(
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth(0.4f)
+                                .fillMaxWidth(0.4f).testTag("EliminaExp")
                         ) {
                             Text("Eliminar")
                         }
