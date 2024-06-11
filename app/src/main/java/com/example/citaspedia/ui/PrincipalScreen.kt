@@ -1,7 +1,10 @@
 package com.example.citaspedia.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.preference.PreferenceManager
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -22,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,7 +38,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,12 +58,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.citaspedia.CitasActivity
+import com.example.citaspedia.MostrarPacienteActivity
 import com.example.citaspedia.PacienteActivity
 import com.example.citaspedia.PacienteItem
 import com.example.citaspedia.R
 import com.example.citaspedia.data.Paciente
+import com.example.citaspedia.idd
+import com.example.citaspedia.pacienteDelete
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
 import java.time.format.DateTimeFormatter
@@ -65,6 +75,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+
+var pacienteId: MutableState<String> =  mutableStateOf("")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -98,7 +110,10 @@ fun Pantalla_ini(
     var pacientesList by remember { mutableStateOf(listOf<Paciente>()) }
     var inputNombre by remember { mutableStateOf("") }
     var isNombreFound by remember { mutableStateOf(false) }
-    var paciente = Paciente()
+    var pacientesEncontrados by remember {
+        mutableStateOf<List<Paciente>>(emptyList())
+    }
+
     var db = Firebase.firestore
     var expanded by remember { mutableStateOf(false) }
     val mostrarPacientes: () -> Unit = {
@@ -125,6 +140,7 @@ fun Pantalla_ini(
             val result = db.collection("pacientes").get().await()
             val pacientes = result.documents.map { document ->
                 Paciente(
+                    id = mutableStateOf(document.id),
                     nombre = mutableStateOf(document.getString("Nombre").orEmpty()),
                     edad = mutableStateOf(document.getString("Edad").orEmpty()),
                     sexo = mutableStateOf(document.getString("Sexo").orEmpty()),
@@ -171,7 +187,9 @@ fun Pantalla_ini(
                             selectedItem = item
                             expanded = false
                         },
-                        modifier = Modifier.fillMaxSize(0.8f).align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .fillMaxSize(0.8f)
+                            .align(Alignment.CenterHorizontally)
                     ) {
                         Text(text = item, fontSize = 16.sp)
                     }
@@ -197,42 +215,63 @@ fun Pantalla_ini(
                 value = inputNombre,
                 onValueChange = {
                     inputNombre = it
-                    paciente = Paciente()
                     isNombreFound = false
                 },
                 modifier = Modifier.testTag("Buscarcampo")
             )
             Button(
                 onClick = {
-                    isNombreFound = pacientesList.any {
-                        it.nombre.value == inputNombre
-
+                    pacientesEncontrados = pacientesList.filter {
+                        it.nombre.value.contains(inputNombre, ignoreCase = true)
                     }
+                    isNombreFound = pacientesEncontrados.isNotEmpty()
+
                     if(!isNombreFound){
                         Toast.makeText(context, "No hay un paciente con nombre ${inputNombre}", Toast.LENGTH_SHORT).show()
                     }
+                    inputNombre = ""
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("BuscarButton"),
-                enabled = true
+                enabled = inputNombre.isNotEmpty()
             ) {
                 Text("Buscar paciente")
             }
 
             if (isNombreFound) {
-                paciente = pacientesList.find {
-                    it.nombre.value == inputNombre
-                }!!
+                pacientesEncontrados.forEach { paciente ->
+                    PacienteItem(paciente = paciente)
+                    Row {
+                        Button(
+                            onClick = { pacienteDelete(paciente.id.value, context ) },
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(0.4f)
+                        ) {
+                            Text("Eliminar")
+                        }
+                        Button(
+                            onClick = {
+                                isNombreFound = false
+                                pacienteId.value = paciente.id.value
+                                Log.d("PACIENTE", pacienteId.value)
+                                val intent = Intent(context, MostrarPacienteActivity::class.java)
+                                context.startActivity(intent)
+                            },
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(0.4f)
+                        ) {
+                            Text("Actualizar")
+                        }
 
-                println(paciente)
-                PacienteItem(paciente)
-            } else {
-                println(paciente)
-
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(45.dp))
-
         }
     }
 }

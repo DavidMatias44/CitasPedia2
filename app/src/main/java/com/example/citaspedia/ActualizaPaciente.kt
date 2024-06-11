@@ -52,6 +52,7 @@ import com.example.citaspedia.ui.contieneLetras
 import com.example.citaspedia.ui.contieneNumeros
 import com.example.citaspedia.ui.errorlet
 import com.example.citaspedia.ui.errornum
+import com.example.citaspedia.ui.pacienteId
 import com.example.citaspedia.ui.theme.CitasPediaTheme
 import com.example.citaspedia.ui.theme.approve_button
 import com.example.citaspedia.ui.theme.background_form
@@ -86,7 +87,13 @@ fun actualizar(gameViewModel: GameViewModel =   viewModel(),
     val currentScreen = CitasPediaScreen.valueOf(
         backStackEntry?.destination?.route ?: CitasPediaScreen.Login.name
     )
-    texto(idd.value,paciente)
+
+    if (idd.value != "") {
+        texto(idd.value, paciente)
+    } else {
+        texto(pacienteId.value, paciente)
+    }
+
     Scaffold(
         topBar = {
             CitasPediaTopAppBar(
@@ -319,7 +326,11 @@ fun actualizar(gameViewModel: GameViewModel =   viewModel(),
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = { isLoading=true
-                        pacienteUpdate(idd.value,paciente,checkedState,checkedState2,context)
+                        if (idd.value != "") {
+                            pacienteUpdate(idd.value,paciente,checkedState,checkedState2,context)
+                        } else {
+                            pacienteUpdate(pacienteId.value, paciente, checkedState, checkedState2, context)
+                        }
                     },
                     shape = RectangleShape,
                     colors = ButtonDefaults.buttonColors(
@@ -380,7 +391,7 @@ fun texto(id: String,paciente: Paciente){
 }
 
 fun pacienteUpdate(id: String,paciente: Paciente, checkedState:Boolean, checkedState2:Boolean,context: Context){
-
+    Log.d("PACIENTE", "DENTRO DE UPDATE: $id")
     val db = Firebase.firestore
     if(checkedState){
         paciente.sexo.value="Hombre"
