@@ -77,7 +77,7 @@ import java.time.LocalTime
 
 
 var pacienteId: MutableState<String> =  mutableStateOf("")
-
+var cont = 0
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Pantalla_ini(
@@ -132,7 +132,7 @@ fun Pantalla_ini(
     val items = listOf("Registrar un paciente" to  PacienteButtonClicked,
         "Ver todos los pacientes" to mostrarPacientes, "Registrar una cita" to CitaButtonClicked,
         "Ver agenda de citas" to mostrarCitas, "Elaborar un expediente" to ExpedienteButtonClicked,
-        "Ver todos los expedientes" to mostrarExpedientes, "Realizar una receta" to {}  )
+        "Ver todos los expedientes" to mostrarExpedientes  )
     var selectedItem by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
@@ -170,7 +170,7 @@ fun Pantalla_ini(
             ) {
             Button(
                 onClick = { expanded = true },
-                modifier = Modifier.align(Alignment.TopStart)
+                modifier = Modifier.align(Alignment.TopStart).testTag("Menu")
             ) {
                 Text("Menú")
             }
@@ -190,10 +190,13 @@ fun Pantalla_ini(
                         modifier = Modifier
                             .fillMaxSize(0.8f)
                             .align(Alignment.CenterHorizontally)
+                            //.testTag("Boton${cont}")
+
                     ) {
                         Text(text = item, fontSize = 16.sp)
                     }
                     Spacer(modifier = Modifier.height(40.dp))
+
 
                 }
 

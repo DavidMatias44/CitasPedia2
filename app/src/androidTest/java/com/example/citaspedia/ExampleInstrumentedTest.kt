@@ -66,14 +66,14 @@ class pacineteTest {
         //Nombre
         composeTestRule.onNodeWithTag("nombreTextField")
             .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("Juan Perez")
+            .performTextInput("Carlos Quispe")
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("El nombre no debe llevar números:")
             .assertDoesNotExist()
         //Edad
         composeTestRule.onNodeWithTag("EdadTextField")
             .assertExists("El campo de texto para la edad no existe.")
-            .performTextInput("30")
+            .performTextInput("40")
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("El nombre no debe llevar letras:")
             .assertDoesNotExist()
@@ -103,12 +103,12 @@ class pacineteTest {
         //Responsable
         composeTestRule.onNodeWithTag("Responsabletest")
             .assertExists("El campo de texto para la responsable no existe.")
-            .performTextInput("no se")
+            .performTextInput("Arturo, su padre")
         composeTestRule.waitForIdle()
         //telefono
         composeTestRule.onNodeWithTag("Telefonotest")
             .assertExists("El campo de texto para la responsable no existe.")
-            .performTextInput("87437439")
+            .performTextInput("1234567890")
         composeTestRule.waitForIdle()
         //Aceptar
         composeTestRule.onNodeWithTag("RegistrarB")
@@ -124,11 +124,23 @@ class pacineteTest {
         }
         composeTestRule.onNodeWithTag("Buscarcampo")
             .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("Juan Perez")
+            .performTextInput("Carlos Quispe")
         composeTestRule.waitForIdle()
-        Thread.sleep(5000)
+
         composeTestRule.onNodeWithTag("BuscarButton")
             .performClick()
+        composeTestRule.waitForIdle()
+        Thread.sleep(10000)
+    }
+
+    @Test
+    fun MuestraPacientes(){
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrarP()
+            }
+        }
+        Thread.sleep(10000)
 
     }
 }
@@ -208,4 +220,29 @@ class ExpedienteTest {
       //No pude
         Thread.sleep(5000)
 }
+}
+
+class CitasTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    @Test
+    fun RegristraCita() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrar()
+            }
+        }
+        Thread.sleep(5000)
+    }
+    @Test
+    fun MuestraCita() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrar()
+            }
+        }
+        Thread.sleep(5000)
+    }
 }
