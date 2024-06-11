@@ -1,9 +1,11 @@
 package com.example.citaspedia.ui
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +16,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,59 +64,15 @@ import com.example.citaspedia.data.Paciente
 //import com.example.citaspedia.ui.pacienteRead
 import com.google.firebase.firestore.ktx.firestore
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.citaspedia.R
 import com.example.citaspedia.data.Usuario
+import com.example.citaspedia.ui.theme.background_form
 import kotlinx.coroutines.CoroutineScope
-
-@Composable
-fun obtenPaciente() {
-    val db = Firebase.firestore
-
-    //val listaPersonas = mutableListOf<Paciente>()
-
-    db.collection("pacientes")//.document("meq4CKpLUagt7z9aHFbO")
-        .get()
-        .addOnSuccessListener { result ->
-            // if (document != null && document.exists()) {
-            // Acceder a cada campo
-            for (document in result) {
-                val pacien = Paciente()
-                val resulData = document.data
-
-                pacien.nombre.value = document.getString("Nombre").toString()
-
-                pacien.edad.value =
-                    document.getString("Edad").toString() // Convertir a Int si es necesario
-
-                pacien.sexo.value = document.getString("Sexo").toString()
-
-                pacien.responsable.value = document.getString("Responsable").toString()
-
-                pacien.num_telefonico.value = document.getString("Numero").toString()
-
-
-                PacienteRepo.pacientes.add(pacien)
-
-            }
-
-
-              //PacientesList(pacientes = listaPersonas)  // Mostrar los valores
-            for(paciente in PacienteRepo.pacientes){
-Log.w("Listaderepo", paciente.nombre.value)//}
-            //} else {
-             //   println("No se encontró el documento")
-           }
-           /* object Repositorio{
-               val pacientes= listaPersonas
-            }*/
-        }
-        .addOnFailureListener { exception ->
-            println("Error al obtener el documento: $exception")
-        }
-
-   // return listaPersonas
-}
-
 
 //usuario: user@gmail.com contraseña: 123456
 @Composable
@@ -121,6 +83,8 @@ fun LoginScreen(
     var usuario = remember { Usuario() }
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    var isRegistrationProcessActive by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -172,5 +136,100 @@ fun LoginScreen(
                 Text("Login")
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
+        ClickableText(
+            text = AnnotatedString("Crear una cuenta."),
+            style = TextStyle(textDecoration = TextDecoration.Underline),
+            onClick = {
+                isRegistrationProcessActive = true
+            }
+        )
+    }
+    
+    if (isRegistrationProcessActive) {
+        RegistrationAlertDialog(
+            usuario = usuario,
+            onDissmissRequest = {
+                isRegistrationProcessActive = false
+                usuario.email.value = ""
+                usuario.password.value = ""
+            },
+            onAcceptClicked = {
+                isRegistrationProcessActive = false
+            },
+            context = context
+        )
     }
 }
+
+@Composable
+fun RegistrationAlertDialog(
+    usuario: Usuario,
+    onDissmissRequest: () -> Unit,
+    onAcceptClicked: () -> Unit,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+    Dialog(
+        onDismissRequest = {
+            onDissmissRequest()
+        },
+        content = {
+            Card(
+                modifier = Modifier.size(290.dp, 350.dp)
+            ){
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.background(background_form)
+                ) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Registro de usuario.",
+                        fontSize = 24.sp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Email: "
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = usuario.email.value,
+                        onValueChange = {
+                            usuario.email.value = it
+                        }
+                    )
+                    Text(
+                        text = "Contraseña: "
+                    )
+                    TextField(
+                        value = usuario.password.value,
+                        onValueChange = {
+                            usuario.password.value = it
+                        },
+                        visualTransformation = PasswordVisualTransformation()
+                    )
+                    Row {
+                        Button(
+                            onClick = {
+                                onDissmissRequest()
+                            }
+                        ) {
+                            Text(text = "Cancelar")
+                        }
+                        Button(
+                            onClick = {
+                                usuario.create(context = context)
+                                onAcceptClicked()
+                            }
+                        ) {
+                            Text(text = "Aceptar")
+                        }
+                    }
+                }
+
+            }
+        }
+    )
+}
+

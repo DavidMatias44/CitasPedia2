@@ -12,8 +12,25 @@ class Usuario(
     var email: MutableState<String> = mutableStateOf(""),
     var password: MutableState<String> = mutableStateOf(""),
 ) {
+    fun create(context: Context) {
+        val firebaseAuth = Firebase.auth
+
+        firebaseAuth.createUserWithEmailAndPassword(this.email.value, this.password.value)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Usuario creado correctamente.", Toast.LENGTH_SHORT).show()
+                } else {
+                    task.exception?.let { exception ->
+                        Toast.makeText(context, "Error: ${exception.message}", Toast.LENGTH_LONG).show()
+                    } ?: run {
+                        Toast.makeText(context, "Error desconocido al crear al usuario.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+    }
+
     fun login(context: Context, onNextButtonClicked: () -> Unit) {
-        var firebaseAuth = Firebase.auth
+        val firebaseAuth = Firebase.auth
         this.nombre.value = ""
 
         firebaseAuth.signInWithEmailAndPassword(this.email.value, this.password.value)
