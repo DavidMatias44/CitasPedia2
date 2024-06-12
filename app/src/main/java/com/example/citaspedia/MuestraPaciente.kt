@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -88,7 +89,7 @@ fun mostrarP(navController: NavHostController = rememberNavController(), modifie
 
             }
             pacientes = pacienteList
-          //  println("Datos de citas obtenidos: $citas")
+            //  println("Datos de citas obtenidos: $citas")
         } catch (e: Exception) {
             println("Error al obtener el documento: $e")
         }
@@ -123,32 +124,33 @@ fun mostrarP(navController: NavHostController = rememberNavController(), modifie
                     PacienteItem(paciente)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row{
-                    Button(
-                        onClick = { pacienteDelete(paciente.id.value, context ) },
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(0.4f)
-                    ) {
-                        Text("Eliminar")
-                    }
+                        Button(
+                            onClick = { pacienteDelete(paciente.id.value, context ) },
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(0.4f).testTag("Elimina${paciente.id.value}")
+                        ) {
+                            Text("Eliminar")
+                            Log.d("Id","EliminaExp_${paciente.id.value}")
+                        }
                         val mostrarPacientes: () -> Unit = {
-                           // (context as? ComponentActivity)?.finish()
+                            // (context as? ComponentActivity)?.finish()
                             idd.value=paciente.id.value
                             val intent = Intent(context, MostrarPacienteActivity::class.java)
                             context.startActivity(intent)
                         }
-                    Button(
-                        onClick = mostrarPacientes
+                        Button(
+                            onClick = mostrarPacientes
                             ,
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(0.4f)
-                    ) {
-                        Text("Actualizar")
+                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(0.4f).testTag("Actualizar${paciente.id.value}")
+                        ) {
+                            Text("Actualizar")
+                        }
                     }
-                }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -172,7 +174,7 @@ fun PacienteItem(paciente: Paciente) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-           // Text(text = "Nombre: ${paciente.id}", style = MaterialTheme.typography.bodyLarge)
+            // Text(text = "Nombre: ${paciente.id}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Nombre: ${paciente.nombre.value}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Edad: ${paciente.edad.value}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Sexo: ${paciente.sexo.value}", style = MaterialTheme.typography.bodyLarge)

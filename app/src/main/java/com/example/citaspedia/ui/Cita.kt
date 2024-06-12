@@ -69,6 +69,7 @@ import java.util.Calendar
 import com.google.firebase.database.*
 import kotlinx.coroutines.tasks.await
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.platform.testTag
 import com.example.citaspedia.data.Paciente
 
 @Composable
@@ -164,7 +165,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 label = { Text("Fecha") },
 
                 modifier = Modifier
-                    .height(75.dp),
+                    .height(75.dp).testTag("prueba"),
                 shape = RoundedCornerShape(10.dp),
                 readOnly = true,
 
@@ -180,9 +181,10 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                         DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
                             val Day = if (selectedDay < 10) "0${selectedDay}" else selectedDay.toString()
                             val Month= if(selectedMonth<9) "0${selectedMonth+1}" else (selectedMonth+1).toString()
-                           cita.fecha.value= "$Day/${Month }/$selectedYear"
+                            cita.fecha.value= "$Day/${Month }/$selectedYear"
                         }, year, month, day).show()
-                    }) {
+                    }, modifier = Modifier
+                        .testTag("fechaboton")) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Date")
                     }
                 }
@@ -213,7 +215,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                 trailingIcon = {
                     IconButton(onClick = {
                         TimePickerDialog(context, { _, selectedHour, selectedMinute ->
-                           cita.hora.value= "$selectedHour:$selectedMinute"
+                            cita.hora.value= "$selectedHour:$selectedMinute"
                         }, hour, minute, true).show()
                     }) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Select Time")
@@ -264,7 +266,7 @@ fun Citas(gameViewModel: GameViewModel =   viewModel(),
                     onDismissRequest = { expanded = false },
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        //.padding(start = 16.dp, end = 16.dp)
+                    //.padding(start = 16.dp, end = 16.dp)
                 ) {
                     pacientes.forEach { opcion ->
                         DropdownMenuItem(
@@ -338,7 +340,7 @@ fun citaInsert(cita: Cita,context: Context) {
         "Hora" to cita.hora.value,
         "Nombre" to cita.nombre_paciente.value,
 
-    )
+        )
 
 // Add a new document with a generated ID
     var id:String=""
@@ -346,7 +348,7 @@ fun citaInsert(cita: Cita,context: Context) {
         .add(unacita)
         .addOnSuccessListener {
             // Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-           // id=documentReference.id
+            // id=documentReference.id
             Toast.makeText(context, "Se registro correctamente", Toast.LENGTH_SHORT).show()
 
         }

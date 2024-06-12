@@ -132,9 +132,10 @@ fun MostrarExpedientes(
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth(0.4f).testTag("EliminaExp")
+                                .fillMaxWidth(0.4f).testTag("EliminaExp_${expediente.id.value}")
                         ) {
                             Text("Eliminar")
+                            Log.d("Id","EliminaExp_${expediente.id.value}")
                         }
                         Button(
                             onClick = {
@@ -146,7 +147,7 @@ fun MostrarExpedientes(
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth(0.4f)
+                                .fillMaxWidth(0.4f).testTag("Actualizar${expediente.id.value}")
                         ) {
                             Text("Actualizar")
                         }
@@ -166,6 +167,7 @@ fun MostrarExpedientes(
         }
     }
 }
+
 
 @Composable
 fun ExpedienteItem(expediente: Expediente) {

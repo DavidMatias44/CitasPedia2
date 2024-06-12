@@ -11,6 +11,7 @@ import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import com.example.citaspedia.ui.Citas
 import com.example.citaspedia.ui.Citaspedia
 import com.example.citaspedia.ui.ExpedienteScreen
 import com.example.citaspedia.ui.Pantalla_ini
@@ -30,7 +31,7 @@ class LoginScreenTest {
     val composeTestRule = createComposeRule()
 
     @Test
-     fun testLogin() {
+    fun testLogin() {
 
         composeTestRule.setContent {
             MaterialTheme {
@@ -78,28 +79,28 @@ class pacineteTest {
         composeTestRule.onNodeWithText("El nombre no debe llevar letras:")
             .assertDoesNotExist()
         //Sexo?
-       /* composeTestRule.onNodeWithTag("HombreCheckbox")
-            .assertExists("El checkbox para Hombre no existe.")
-            .performClick()
-        composeTestRule.waitForIdle()
+        /* composeTestRule.onNodeWithTag("HombreCheckbox")
+             .assertExists("El checkbox para Hombre no existe.")
+             .performClick()
+         composeTestRule.waitForIdle()
 
-        // Asegurarse de que se ha seleccionado el checkbox de Hombre
-        composeTestRule.onNodeWithTag("HombreCheckbox")
-            .assertIsOn()
+         // Asegurarse de que se ha seleccionado el checkbox de Hombre
+         composeTestRule.onNodeWithTag("HombreCheckbox")
+             .assertIsOn()
 
-        // Interactuar con el checkbox de Mujer
-        composeTestRule.onNodeWithTag("MujerCheckbox")
-            .assertExists("El checkbox para Mujer no existe.")
-            .performClick()
-        composeTestRule.waitForIdle()
+         // Interactuar con el checkbox de Mujer
+         composeTestRule.onNodeWithTag("MujerCheckbox")
+             .assertExists("El checkbox para Mujer no existe.")
+             .performClick()
+         composeTestRule.waitForIdle()
 
-        // Asegurarse de que se ha seleccionado el checkbox de Mujer
-        composeTestRule.onNodeWithTag("MujerCheckbox")
-            .assertIsOn()
+         // Asegurarse de que se ha seleccionado el checkbox de Mujer
+         composeTestRule.onNodeWithTag("MujerCheckbox")
+             .assertIsOn()
 
-        // Asegurarse de que el checkbox de Hombre está desactivado
-        composeTestRule.onNodeWithTag("HombreCheckbox")
-            .assertIsOff()*/
+         // Asegurarse de que el checkbox de Hombre está desactivado
+         composeTestRule.onNodeWithTag("HombreCheckbox")
+             .assertIsOff()*/
         //Responsable
         composeTestRule.onNodeWithTag("Responsabletest")
             .assertExists("El campo de texto para la responsable no existe.")
@@ -143,6 +144,34 @@ class pacineteTest {
         Thread.sleep(10000)
 
     }
+    @Test
+    fun testEliminarPaciente() {
+
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrarP()
+            }
+        }
+        Thread.sleep(5000)
+        composeTestRule.onNodeWithTag("EliminaExp_SNnKM0rtsdWTgBbBIg4k")
+            .performClick()
+        composeTestRule.waitForIdle()
+
+    }
+    @Test
+    fun testEditarPaciente() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrarP()
+            }
+        }
+        Thread.sleep(5000)
+        composeTestRule.onNodeWithTag("ActualizarSNnKM0rtsdWTgBbBIg4k")
+            .performClick()
+        composeTestRule.waitForIdle()
+        Thread.sleep(5000)
+    }
+
 }
 
 class ExpedienteTest {
@@ -157,42 +186,42 @@ class ExpedienteTest {
                 ExpedienteScreen()
             }
         }
-        //Nombre
+
         composeTestRule.onNodeWithTag("NombreTextField")
             .assertExists("El campo de texto para el nombre no existe.")
             .performTextInput("Juan Perez")
         composeTestRule.waitForIdle()
-        //motivo_consulta
+
         composeTestRule.onNodeWithTag("MotivTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("Chorro")
+            .assertExists("El campo de texto para el motivo de consulta no existe.")
+            .performTextInput("Dolor abdominal severo")
         composeTestRule.waitForIdle()
-        //exploracion_fisica
+
         composeTestRule.onNodeWithTag("ExplFisTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("no se que madres significa xd")
+            .assertExists("El campo de texto para la exploración física no existe.")
+            .performTextInput("Presión arterial alta, pulso irregular")
         composeTestRule.waitForIdle()
-        //diagnostico
+
         composeTestRule.onNodeWithTag("DiagTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("Posible sida")
+            .assertExists("El campo de texto para el diagnóstico no existe.")
+            .performTextInput("Apendicitis aguda")
         composeTestRule.waitForIdle()
-        //tratamiento
+
         composeTestRule.onNodeWithTag("TrataTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("Masaje testicular")
+            .assertExists("El campo de texto para el tratamiento no existe.")
+            .performTextInput("Cirugía de emergencia para extirpación del apéndice")
         composeTestRule.waitForIdle()
-        //examenes_lab
+
         composeTestRule.onNodeWithTag("ExmLabTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("???")
+            .assertExists("El campo de texto para los exámenes de laboratorio no existe.")
+            .performTextInput("Hemograma completo, análisis de orina")
         composeTestRule.waitForIdle()
-        //pronostico
+
         composeTestRule.onNodeWithTag("PronoTextField")
-            .assertExists("El campo de texto para el nombre no existe.")
-            .performTextInput("La muerte")
+            .assertExists("El campo de texto para el pronóstico no existe.")
+            .performTextInput("Pronóstico favorable después de la cirugía")
         composeTestRule.waitForIdle()
-        //Regitro
+
         composeTestRule.onNodeWithTag("RegistrarButton")
             .performClick()
         Thread.sleep(5000)
@@ -202,24 +231,41 @@ class ExpedienteTest {
     fun MuestraExpediente() {
         composeTestRule.setContent {
             MaterialTheme {
-                ExpedienteScreen()
+                MostrarExpedientes()
             }
         }
-        composeTestRule.onNodeWithTag("MostrarButton")
-            .performClick()
+
         Thread.sleep(5000)
     }
     @Test
     fun testEliminarExpediente() {
-        // Lanza la actividad de MostrarExpedientesActivity
+
         composeTestRule.setContent {
             MaterialTheme {
                 MostrarExpedientes()
             }
         }
-      //No pude
         Thread.sleep(5000)
-}
+        composeTestRule.onNodeWithTag("EliminaExp_JAQUFvDlsKbKrenOdxnE")
+            .performClick()
+        composeTestRule.waitForIdle()
+
+    }
+    @Test
+    fun testEditarExpediente() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                MostrarExpedientes()
+            }
+        }
+        Thread.sleep(5000)
+        composeTestRule.onNodeWithTag("ActualizarJAQUFvDlsKbKrenOdxnE")
+            .performClick()
+        composeTestRule.waitForIdle()
+        Thread.sleep(5000)
+    }
+
+
 }
 
 class CitasTest {
@@ -231,10 +277,16 @@ class CitasTest {
     fun RegristraCita() {
         composeTestRule.setContent {
             MaterialTheme {
-                mostrar()
+                Citas()
             }
         }
+        composeTestRule.onNodeWithTag("prueba")
+
+            .performTextInput("03/06/2024")
+        composeTestRule.waitForIdle()
         Thread.sleep(5000)
+
+
     }
     @Test
     fun MuestraCita() {
