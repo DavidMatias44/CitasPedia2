@@ -58,6 +58,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.testTag
 
 class CitasActivity : ComponentActivity() {
     private val dataBase = FirebaseFirestore.getInstance()
@@ -145,8 +146,9 @@ Row {
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
         modifier = Modifier
             .weight(1f)
-            .fillMaxWidth(0.4f)
+            .fillMaxWidth(0.4f).testTag("Elimina${cita.id.value}")
     ) {
+        Log.d("Id","Elimina${cita.id.value}")
         Text("Eliminar")
     }
     val mostrarCitas: () -> Unit = {
@@ -160,7 +162,7 @@ Row {
         onClick = mostrarCitas,
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
         modifier = Modifier    .weight(1f)
-            .fillMaxWidth(0.4f)
+            .fillMaxWidth(0.4f).testTag("Actualizar${cita.id.value}")
     ) {
         Text("Actualizar")
     }

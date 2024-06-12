@@ -49,6 +49,7 @@ class LoginScreenTest {
 
         composeTestRule.onNodeWithTag("loginButton")
             .performClick()
+        Thread.sleep(5000)
     }
 
 }
@@ -153,7 +154,7 @@ class pacineteTest {
             }
         }
         Thread.sleep(5000)
-        composeTestRule.onNodeWithTag("EliminaExp_SNnKM0rtsdWTgBbBIg4k")
+        composeTestRule.onNodeWithTag("EliminaGYSGTYNjxmtqiCpoY2j4")
             .performClick()
         composeTestRule.waitForIdle()
 
@@ -166,7 +167,7 @@ class pacineteTest {
             }
         }
         Thread.sleep(5000)
-        composeTestRule.onNodeWithTag("ActualizarSNnKM0rtsdWTgBbBIg4k")
+        composeTestRule.onNodeWithTag("ActualizarGYSGTYNjxmtqiCpoY2j4")
             .performClick()
         composeTestRule.waitForIdle()
         Thread.sleep(5000)
@@ -259,7 +260,7 @@ class ExpedienteTest {
             }
         }
         Thread.sleep(5000)
-        composeTestRule.onNodeWithTag("ActualizarJAQUFvDlsKbKrenOdxnE")
+        composeTestRule.onNodeWithTag("ActualizarHGz0eXon5SQY1bTVpUsG")
             .performClick()
         composeTestRule.waitForIdle()
         Thread.sleep(5000)
@@ -297,4 +298,32 @@ class CitasTest {
         }
         Thread.sleep(5000)
     }
+    @Test
+    fun testEditarCita() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrar()
+            }
+        }
+        Thread.sleep(5000)
+        composeTestRule.onNodeWithTag("ActualizarFWMTDLVkOY65713USLbW")
+            .performClick()
+        composeTestRule.waitForIdle()
+        Thread.sleep(5000)
+    }
+
+    @Test
+    fun testEliminarCita() {
+        composeTestRule.setContent {
+            MaterialTheme {
+                mostrar()
+            }
+        }
+        Thread.sleep(5000)
+        composeTestRule.onNodeWithTag("EliminaFWMTDLVkOY65713USLbW")
+            .performClick()
+        composeTestRule.waitForIdle()
+        Thread.sleep(5000)
+    }
+
 }

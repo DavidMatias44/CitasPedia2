@@ -132,7 +132,7 @@ fun mostrarP(navController: NavHostController = rememberNavController(), modifie
                                 .fillMaxWidth(0.4f).testTag("Elimina${paciente.id.value}")
                         ) {
                             Text("Eliminar")
-                            Log.d("Id","EliminaExp_${paciente.id.value}")
+                            Log.d("Id","Elimina${paciente.id.value}")
                         }
                         val mostrarPacientes: () -> Unit = {
                             // (context as? ComponentActivity)?.finish()
